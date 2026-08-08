@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM&R Tool 使用教學</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+  background: #0f172a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 20px 48px;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ── Header ── */
+.header { text-align: center; margin-bottom: 26px; animation: fadeDown .5s ease; }
+.header h1 { font-size: 26px; font-weight: 700; color: #f8fafc; }
+.header p  { color: #64748b; margin-top: 5px; font-size: 14px; }
+
+/* ── Step rail ── */
+.rail-wrap { width: 100%; max-width: 900px; overflow-x: auto; margin-bottom: 26px; -webkit-overflow-scrolling: touch; }
+.rail-wrap::-webkit-scrollbar { height: 0; }
+.step-rail { display: flex; align-items: center; gap: 0; width: max-content; margin: 0 auto; animation: fadeDown .5s ease .08s both; }
+.rail-item { display: flex; align-items: center; }
+.rail-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 13px;
+  background: #1e293b; border: 1px solid #334155;
+  color: #475569; font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+  font-family: inherit;
+}
+.rail-item:first-child .rail-btn { border-radius: 8px 0 0 8px; }
+.rail-item:last-child  .rail-btn { border-radius: 0 8px 8px 0; }
+.rail-item:not(:first-child) .rail-btn { border-left: none; }
+.rail-num {
+  width: 19px; height: 19px; border-radius: 50%;
+  background: #334155; color: #64748b;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+  transition: all .2s;
+}
+.rail-btn:hover { color: #94a3b8; }
+.rail-btn.active { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+.rail-btn.active .rail-num { background: rgba(255,255,255,.25); color: #fff; }
+.rail-btn.done { color: #22c55e; }
+.rail-btn.done .rail-num { background: #14532d; color: #22c55e; }
+
+/* ── Card ── */
+.card {
+  width: 880px; max-width: 100%;
+  background: #1e293b; border: 1px solid #334155; border-radius: 16px;
+  overflow: hidden; animation: fadeDown .5s ease .15s both;
+}
+
+/* ── Panel ── */
+.panel { display: none; }
+.panel.active { display: flex; flex-direction: column; animation: slideIn .35s ease; }
+@keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+.ph {
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid #334155;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.ph-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.ph-icon.blue{background:#1e3a5f;} .ph-icon.amber{background:#431407;}
+.ph-icon.green{background:#14532d;} .ph-icon.indigo{background:#1e1b4b;}
+.ph-icon.violet{background:#2e1065;} .ph-icon.slate{background:#334155;}
+.ph-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: #475569; margin-bottom: 2px; }
+.ph h2 { font-size: 18px; font-weight: 700; color: #f8fafc; }
+.ph p  { font-size: 13px; color: #64748b; margin-top: 3px; line-height: 1.5; }
+
+.pb { padding: 24px 28px; flex: 1; }
+
+.pf {
+  padding: 16px 28px 20px;
+  border-top: 1px solid #334155;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.dots { display: flex; gap: 5px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #334155; transition: all .3s; }
+.dot.active { background: #2563eb; width: 18px; border-radius: 3px; }
+.dot.done   { background: #16a34a; }
+
+.nav-btns { display: flex; gap: 8px; }
+.btn {
+  padding: 8px 18px; border-radius: 7px;
+  font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+  transition: all .15s; font-family: inherit;
+}
+.btn-prev { background: #1e293b; border: 1px solid #475569; color: #94a3b8; }
+.btn-prev:hover:not(:disabled) { color: #f8fafc; border-color: #64748b; }
+.btn-prev:disabled { opacity: .4; cursor: default; }
+.btn-next { background: #2563eb; color: #fff; }
+.btn-next:hover { background: #1d4ed8; }
+.btn-finish { background: #16a34a; color: #fff; }
+.btn-finish:hover { background: #15803d; }
+
+/* ── Doc text ── */
+.pb h3 { font-size: 14px; font-weight: 700; color: #e2e8f0; margin: 22px 0 9px; }
+.pb h3:first-child { margin-top: 0; }
+.pb p  { font-size: 13.5px; color: #94a3b8; line-height: 1.75; margin-bottom: 10px; }
+.pb strong { color: #e2e8f0; font-weight: 600; }
+.pb code { background: #0f172a; border: 1px solid #334155; border-radius: 4px; padding: 1px 5px; font-size: 12px; color: #93c5fd; }
+.pb ul { margin: 0 0 12px 0; padding-left: 18px; }
+.pb li { font-size: 13.5px; color: #94a3b8; line-height: 1.7; margin-bottom: 5px; }
+.pb li::marker { color: #475569; }
+
+/* Callout */
+.callout {
+  display: flex; gap: 10px; margin: 14px 0;
+  border-radius: 8px; padding: 12px 14px;
+  font-size: 13px; line-height: 1.6;
+}
+.callout.blue   { background: #0c1a3a; border: 1px solid #1d4ed8; color: #93c5fd; }
+.callout.green  { background: #052e16; border: 1px solid #15803d; color: #86efac; }
+.callout.amber  { background: #2c0a00; border: 1px solid #c2410c; color: #fdba74; }
+.callout.violet { background: #1a0b3a; border: 1px solid #6d28d9; color: #c4b5fd; }
+.callout .ci { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.callout b { color: #fff; font-weight: 700; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 16px; font-size: 12.5px; }
+th, td { border: 1px solid #334155; padding: 8px 11px; text-align: left; color: #94a3b8; line-height: 1.6; vertical-align: top; }
+th { background: #0f172a; color: #cbd5e1; font-weight: 600; }
+td strong { color: #e2e8f0; }
+
+/* Two-column layout: text + phone */
+.split { display: flex; gap: 26px; align-items: flex-start; }
+.split .col-text { flex: 1; min-width: 0; }
+.split .col-phone { flex-shrink: 0; }
+@media (max-width: 780px) {
+  .split { flex-direction: column; }
+  .split .col-phone { align-self: center; }
+  .pb { padding: 20px 18px; }
+  .ph { padding: 18px 18px 15px; }
+  .pf { padding: 14px 18px 16px; }
+  body { padding: 20px 12px 36px; }
+}
+
+/* ━━━━━━━━━━ PHONE MOCK ━━━━━━━━━━ */
+.phone {
+  width: 322px; flex-shrink: 0;
+  background: #fff; border-radius: 26px;
+  border: 7px solid #334155;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0,0,0,.4);
+  font-size: 12px; color: #111827;
+  line-height: 1.4;
+  user-select: none;
+}
+.phone.tall .scr { height: 470px; }
+.scr { height: 430px; overflow-y: auto; background: linear-gradient(#eff6ff, #fff 190px); }
+.scr.plain { background: #fff; }
+.scr::-webkit-scrollbar { width: 0; }
+.phone-cap { text-align: center; font-size: 11px; color: #475569; margin-top: 8px; }
+
+/* app bar */
+.abar {
+  background: #fff; border-bottom: 1px solid #f3f4f6;
+  padding: 11px 14px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 5;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+.abar-t { font-size: 14px; font-weight: 700; color: #111827; }
+.tag {
+  font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+  letter-spacing: .03em; display: inline-block;
+}
+.tag.amber { color: #b45309; background: #fef3c7; }
+.tag.blue  { color: #1d4ed8; background: #dbeafe; }
+.tag.indigo{ color: #fff; background: #818cf8; letter-spacing:.08em; }
+.tag.red   { color: #dc2626; background: #fee2e2; }
+
+.body { padding: 14px 12px; }
+.wcard { background:#fff; border:1px solid #f3f4f6; border-radius: 20px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.04); margin-bottom: 12px; }
+.wcard-t { font-weight: 700; font-size: 13px; color:#111827; margin-bottom: 11px; }
+
+.lbl { font-size: 10px; font-weight: 600; color:#4b5563; margin-bottom: 4px; }
+.inp {
+  width: 100%; border: 2px solid #e5e7eb; border-radius: 14px;
+  padding: 9px 12px; font-size: 12px; color: #111827; background: #fff;
+  margin-bottom: 10px;
+}
+.inp.ph-gray { color: #9ca3af; }
+
+/* buttons (mirrors choiceClass) */
+.b {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  width: 100%; border: 2px solid transparent; border-radius: 14px;
+  padding: 11px; font-size: 12px; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: all .15s; text-align: center;
+}
+.b-blue  { background:#3b82f6; color:#fff; box-shadow: 0 2px 6px rgba(59,130,246,.35); }
+.b-ghost { background:#fff; border-color:#e5e7eb; color:#6b7280; }
+.b-off   { background:#fff; border-color:#e5e7eb; color:#9ca3af; }
+.b-ind   { background:#eef2ff; border-color:#e0e7ff; color:#4338ca; }
+.b-green { background:#f0fdf4; border-color:#bbf7d0; color:#15803d; }
+.b-red   { background:#ef4444; color:#fff; }
+.b-sm    { padding: 8px; border-radius: 11px; font-size: 11px; }
+.b.split-row { justify-content: space-between; }
+.b .sub { font-size: 10px; font-weight: 400; opacity: .8; margin-top: 1px; }
+.b .lt  { text-align: left; }
+
+/* divider with label */
+.divl { display:flex; align-items:center; gap: 10px; margin: 11px 0; }
+.divl span { font-size: 10px; color:#9ca3af; font-weight: 500; }
+.divl i { flex:1; height:1px; background:#f3f4f6; display:block; }
+
+/* module row */
+.mrow {
+  display:flex; align-items:center; gap:9px; width:100%;
+  border: 2px solid #f3f4f6; background:#fff; border-radius: 15px;
+  padding: 9px 11px; margin-bottom: 8px; cursor: pointer;
+  transition: all .15s; text-align:left; font-family: inherit;
+}
+.mrow .ico {
+  width: 27px; height: 27px; border-radius: 9px; flex-shrink: 0;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 10px; font-weight: 700; color:#9ca3af; background:#e5e7eb;
+  transition: all .15s;
+}
+.mrow .tt { flex:1; min-width:0; }
+.mrow .tt b { display:block; font-size: 11.5px; font-weight: 600; color:#4b5563; }
+.mrow .tt i { display:block; font-style: normal; font-size: 9.5px; color:#9ca3af; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mrow .rad { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d1d5db; background:#fff; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition: all .15s; }
+.mrow .rad em { width: 7px; height: 7px; border-radius: 50%; background:#fff; display:none; }
+.mrow.on .rad em { display:block; }
+
+/* module colour variants (0 gray 1 blue 2 emerald 3 violet 4 amber) */
+.mrow.on.m0 { background:#f9fafb; border-color:#d1d5db; } .mrow.on.m0 .ico,.mrow.on.m0 .rad { background:#6b7280; border-color:#6b7280; color:#fff; }
+.mrow.on.m1 { background:#eff6ff; border-color:#bfdbfe; } .mrow.on.m1 .ico,.mrow.on.m1 .rad { background:#3b82f6; border-color:#3b82f6; color:#fff; }
+.mrow.on.m1 .tt b { color:#1d4ed8; }
+.mrow.on.m2 { background:#ecfdf5; border-color:#a7f3d0; } .mrow.on.m2 .ico,.mrow.on.m2 .rad { background:#10b981; border-color:#10b981; color:#fff; }
+.mrow.on.m2 .tt b { color:#047857; }
+.mrow.on.m3 { background:#f5f3ff; border-color:#ddd6fe; } .mrow.on.m3 .ico,.mrow.on.m3 .rad { background:#8b5cf6; border-color:#8b5cf6; color:#fff; }
+.mrow.on.m3 .tt b { color:#6d28d9; }
+.mrow.on.m4 { background:#fffbeb; border-color:#fde68a; } .mrow.on.m4 .ico,.mrow.on.m4 .rad { background:#f59e0b; border-color:#f59e0b; color:#fff; }
+.mrow.on.m4 .tt b { color:#b45309; }
+.mrow.on.m0 .tt b { color:#4b5563; }
+
+/* patient card */
+.pcard { background:#fff; border:2px solid #f3f4f6; border-radius: 15px; margin-bottom: 10px; overflow:hidden; }
+.pcard .top { padding: 11px 12px; }
+.pcard .chips { display:flex; align-items:center; gap:6px; margin-bottom: 4px; flex-wrap: wrap; }
+.pcard .bed { font-size: 13px; font-weight: 700; color:#111827; }
+.pcard .meta { font-size: 10px; color:#9ca3af; margin-top: 3px; display:flex; gap: 10px; }
+.pcard .acts { border-top:1px solid #f9fafb; padding: 5px 12px; display:flex; justify-content:flex-end; gap: 10px; }
+.pcard .acts span { font-size: 10px; color:#93c5fd; }
+.pcard .acts span.del { color:#fca5a5; }
+
+.wardhead { display:flex; align-items:center; gap:8px; margin: 0 2px 8px; }
+.wardhead i { flex:1; height:1px; background:#f3f4f6; display:block; }
+.wardhead em { font-style:normal; font-size:10px; color:#9ca3af; }
+
+/* alert box */
+.alert { border-radius: 15px; padding: 11px 12px; margin-bottom: 12px; font-size: 11px; line-height:1.55; }
+.alert.amber { background:#fffbeb; border:1px solid #fde68a; color:#b45309; }
+.alert.amber b { color:#92400e; }
+
+/* progress bar */
+.pgw { padding: 11px 13px 7px; }
+.pgw .row { display:flex; justify-content:space-between; margin-bottom:4px; }
+.pgw .row b { font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
+.pgw .row span { font-size:9.5px; color:#6b7280; font-weight:500; }
+.pgw .track { height: 9px; border-radius: 999px; overflow:hidden; }
+.pgw .fill { height:100%; border-radius:999px; transition: width .4s; }
+.pgw .cap { font-size:9.5px; color:#9ca3af; margin-top:4px; }
+
+/* expandable row */
+.erow { border: 2px solid #f3f4f6; border-radius: 15px; background:#fff; margin-bottom: 7px; transition: all .15s; }
+.erow.open { border-color:#d1d5db; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.erow .hd { display:flex; align-items:center; gap: 8px; padding: 8px 10px; cursor:pointer; }
+.erow .badge { font-size:9px; font-weight:700; color:#fff; background:#6b7280; border-radius:5px; padding:2px 5px; flex-shrink:0; }
+.erow .nm { flex:1; min-width:0; }
+.erow .nm b { display:block; font-size: 11.5px; font-weight:700; color:#1f2937; }
+.erow .nm i { display:block; font-style:normal; font-size:9.5px; color:#9ca3af; margin-top:1px; }
+.erow .val {
+  min-width: 38px; height: 30px; padding: 0 7px; border-radius: 11px;
+  border: 2px solid #e5e7eb; background:#f9fafb; color:#d1d5db;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.erow .val.set { background:#eff6ff; border-color:#bfdbfe; color:#1d4ed8; }
+.erow .val.norm { background:#f0fdf4; border-color:#bbf7d0; color:#15803d; }
+.erow .chev { color:#9ca3af; font-size: 10px; transition: transform .2s; flex-shrink:0; }
+.erow.open .chev { transform: rotate(180deg); }
+.erow .bd { display:none; padding: 3px 10px 10px; border-top:1px solid rgba(0,0,0,.05); }
+.erow.open .bd { display:block; }
+
+/* scale button strip */
+.strip { display:flex; gap: 5px; margin-top: 7px; }
+.sb {
+  flex:1; border:2px solid #e5e7eb; background:#fff; color:#374151;
+  border-radius: 11px; padding: 7px 0; font-size: 11px; font-weight:700;
+  cursor:pointer; font-family:inherit; transition: all .12s; text-align:center;
+}
+.sb:hover { background:#f9fafb; }
+.sb.on { background:#8b5cf6; border-color:#8b5cf6; color:#fff; }
+.sb.on.blue { background:#3b82f6; border-color:#3b82f6; }
+.sb.on.green{ background:#22c55e; border-color:#22c55e; }
+.sb.on.red  { background:#ef4444; border-color:#ef4444; }
+
+.allnorm {
+  width:100%; display:flex; align-items:center; justify-content:center; gap:5px;
+  border:2px solid #e5e7eb; background:#fff; color:#6b7280;
+  border-radius: 11px; padding: 7px; font-size: 10.5px; font-weight:700;
+  cursor:pointer; font-family:inherit; margin-bottom: 9px; transition: all .15s;
+}
+.allnorm.done { background:#f0fdf4; border-color:#bbf7d0; color:#16a34a; cursor:default; }
+
+/* bottom nav */
+.bnav { position: sticky; bottom: 0; background:#fff; border-top:1px solid #f3f4f6; padding: 9px 12px; display:flex; gap:7px; }
+.bnav .sq { width: 40px; height: 40px; border-radius: 14px; background:#f3f4f6; display:flex; align-items:center; justify-content:center; color:#4b5563; flex-shrink:0; }
+.bnav .go { flex:1; height:40px; border-radius:14px; background:#3b82f6; color:#fff; font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 6px rgba(59,130,246,.35); }
+
+/* ASIA grid */
+.asia-tabs { display:flex; gap: 5px; margin-bottom: 9px; }
+.at { flex:1; border-radius: 12px; padding: 6px 0; font-size: 10.5px; font-weight:700; text-align:center; background:#f3f4f6; color:#6b7280; cursor:pointer; font-family:inherit; border:none; transition: all .12s; }
+.at.on { background:#6366f1; color:#fff; }
+.agrid { display:flex; gap: 5px; align-items:flex-start; }
+.apanel { flex:1; border-radius: 15px; overflow:hidden; border:2px solid; }
+.apanel.l { background:#eff6ff; border-color:#bfdbfe; }
+.apanel.r { background:#fef2f2; border-color:#fecaca; }
+.apanel .hd { height: 32px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; border-bottom:1px solid; }
+.apanel.l .hd { color:#1d4ed8; border-color:#bfdbfe; }
+.apanel.r .hd { color:#b91c1c; border-color:#fecaca; }
+.apanel .sub { height: 20px; display:flex; gap:4px; align-items:center; justify-content:center; border-bottom:1px solid rgba(0,0,0,.05); }
+.apanel .sub span { width: 34px; text-align:center; font-size:9px; font-weight:700; }
+.apanel .sub .lt { color:#6366f1; } .apanel .sub .pp { color:#f43f5e; }
+.arow { height: 40px; display:flex; gap:4px; align-items:center; justify-content:center; }
+.cell {
+  width: 34px; height: 34px; border-radius: 8px; border:1px solid #d1d5db;
+  background:#fff; color:#374151; font-size: 12px; font-weight:600;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  font-family:inherit; transition: all .1s; user-select:none; touch-action: none;
+}
+.cell.full { background:#dcfce7; border-color:#86efac; color:#15803d; }
+.cell.part { background:#fef3c7; border-color:#fcd34d; color:#b45309; }
+.cell.zero { background:#fee2e2; border-color:#fca5a5; color:#b91c1c; }
+.cell.nt   { background:#e5e7eb; border-color:#9ca3af; color:#4b5563; font-size:10px; }
+.cell.press { transform: scale(.9); }
+.acen { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; }
+.acen .sp32 { height:32px; width:100%; display:flex; align-items:center; padding:0 3px; }
+.acen .sp20 { height:20px; }
+.acen .lv { height:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.acen .lv b { font-size: 10.5px; font-weight:700; color:#4b5563; }
+.acen .lv i { font-style:normal; font-size:9px; color:#6b7280; line-height:1.2; text-align:center; margin-top:1px; }
+.zbtn { width:100%; border-radius:11px; border:2px solid #fde68a; background:#fffbeb; color:#b45309; font-size:11px; font-weight:700; padding:5px 0; text-align:center; }
+
+/* totals */
+.tot { display:flex; gap:7px; margin-top:10px; }
+.tot div { flex:1; background:#eef2ff; border:1px solid #c7d2fe; border-radius:14px; padding:8px; text-align:center; }
+.tot b { display:block; font-size:9.5px; color:#818cf8; font-weight:600; }
+.tot em { display:block; font-style:normal; font-size:15px; font-weight:700; color:#4338ca; margin-top:1px; }
+.tot i { display:block; font-style:normal; font-size:9px; color:#6366f1; margin-top:1px; }
+
+/* modal mock */
+.mmodal { background:#fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.2); overflow:hidden; }
+.mmodal .mh { padding: 13px 14px; border-bottom:1px solid #f3f4f6; }
+.mmodal .mh b { font-size: 13px; font-weight:700; color:#111827; display:block; }
+.mmodal .mh i { font-style:normal; font-size:10px; color:#9ca3af; }
+.mmodal pre {
+  margin:0; padding: 12px 14px; font-size: 10px; line-height:1.6;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; color:#374151;
+  white-space: pre-wrap; max-height: 210px; overflow-y:auto; background:#f9fafb;
+}
+.mmodal .mf { padding: 10px 14px; display:flex; gap:6px; border-top:1px solid #f3f4f6; }
+
+.hint { font-size: 10px; color:#6b7280; text-align:center; padding: 5px 0; }
+.hint b { color:#111827; }
+
+/* try-it banner over interactive mocks */
+.tryit {
+  display:inline-flex; align-items:center; gap:6px;
+  background:#0c1a3a; border:1px solid #1d4ed8; color:#93c5fd;
+  border-radius: 999px; padding: 4px 12px; font-size: 11px; font-weight:600;
+  margin-bottom: 10px;
+}
+.tryit .pulse { width:6px; height:6px; border-radius:50%; background:#3b82f6; animation: pulse 1.6s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.25;} }
+
+kbd { background:#0f172a; border:1px solid #334155; border-bottom-width:2px; border-radius:4px; padding:1px 5px; font-size:11px; color:#cbd5e1; font-family:inherit; }
+
+/* ━━━━━━━━━━ 視覺元件 ━━━━━━━━━━ */
+
+/* 對照卡：兩種模式並排 */
+.vcards { display:flex; gap: 12px; margin: 14px 0 16px; }
+.vcard { flex:1; min-width:0; border:1px solid #334155; border-radius: 12px; overflow:hidden; background:#0f172a; }
+.vcard .vh { padding: 10px 12px; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; }
+.vcard.amber .vh { background:#2c0a00; color:#fdba74; border-bottom:1px solid #7c2d12; }
+.vcard.blue  .vh { background:#0c1a3a; color:#93c5fd; border-bottom:1px solid #1e40af; }
+.vcard ul { margin:0; padding: 10px 12px; list-style:none; }
+.vcard li { font-size: 12px; color:#94a3b8; line-height:1.5; margin-bottom:7px; padding-left: 18px; position:relative; }
+.vcard li:last-child { margin-bottom:0; }
+.vcard li::before { position:absolute; left:0; top:0; }
+.vcard li.y::before { content:"✓"; color:#22c55e; font-weight:700; }
+.vcard li.n::before { content:"✕"; color:#ef4444; font-weight:700; }
+.vcard li.i::before { content:"·"; color:#475569; font-weight:700; font-size:16px; line-height:1.1; }
+.vcard li b { color:#e2e8f0; }
+
+/* 流程鏈 */
+.flow { display:flex; align-items:stretch; gap:0; margin: 14px 0 16px; flex-wrap:wrap; }
+.fstep {
+  flex:1; min-width: 108px; background:#0f172a; border:1px solid #334155;
+  border-radius: 10px; padding: 11px 10px; text-align:center;
+}
+.fstep .fi { font-size: 19px; display:block; margin-bottom: 5px; }
+.fstep b { display:block; font-size: 12px; color:#e2e8f0; font-weight:700; }
+.fstep i { display:block; font-style:normal; font-size: 10.5px; color:#64748b; margin-top:3px; line-height:1.4; }
+.fstep.on { border-color:#1d4ed8; background:#0c1a3a; }
+.fstep.on b { color:#93c5fd; }
+.farr { display:flex; align-items:center; color:#475569; font-size: 15px; padding: 0 6px; flex-shrink:0; }
+@media (max-width: 780px) {
+  .flow { flex-direction: column; }
+  .farr { justify-content:center; padding: 3px 0; transform: rotate(90deg); }
+}
+
+/* 分支列（掛在流程下方） */
+.fbranch { display:flex; gap:10px; margin: -6px 0 16px; }
+.fbranch div {
+  flex:1; border-left: 2px solid #334155; padding: 6px 0 6px 10px;
+  font-size: 11.5px; color:#64748b; line-height:1.5;
+}
+.fbranch b { color:#cbd5e1; display:block; font-size:12px; margin-bottom:2px; }
+
+/* 手勢卡 */
+.gcards { display:flex; gap:10px; margin: 14px 0 16px; }
+.gcard { flex:1; background:#0f172a; border:1px solid #334155; border-radius:12px; padding: 13px 11px; text-align:center; }
+.gcard .gi { font-size: 26px; display:block; margin-bottom: 7px; }
+.gcard b { display:block; font-size:12.5px; color:#e2e8f0; margin-bottom:4px; }
+.gcard i { display:block; font-style:normal; font-size:11px; color:#64748b; line-height:1.5; }
+.gcard.ok { border-color:#15803d; } .gcard.ok b { color:#86efac; }
+.gcard.no { border-color:#7c2d12; } .gcard.no b { color:#fdba74; }
+@media (max-width: 780px) { .gcards, .vcards { flex-direction:column; } }
+
+/* 時間軸 */
+.tline { margin: 16px 0 18px; }
+.tbar { display:flex; height: 9px; border-radius: 999px; overflow:hidden; margin-bottom: 9px; }
+.tbar span { display:block; }
+.tline .marks { display:flex; }
+.tline .marks div { flex:1; padding-right: 8px; }
+.tline .marks b { display:block; font-size: 12px; font-weight:700; margin-bottom:2px; }
+.tline .marks i { display:block; font-style:normal; font-size: 11px; color:#64748b; line-height:1.5; }
+
+/* 小圖示格（產出四宮格） */
+.qgrid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 14px 0 16px; }
+.qbox { background:#0f172a; border:1px solid #334155; border-radius:12px; padding: 12px; }
+.qbox .qt { display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:700; color:#e2e8f0; margin-bottom:5px; }
+.qbox p { font-size:11.5px; color:#64748b; line-height:1.55; margin:0; }
+.qbox .qw { display:block; font-size:10.5px; color:#475569; margin-top:6px; }
+@media (max-width: 520px) { .qgrid { grid-template-columns: 1fr; } }
+
+/* 前後對照（沒評 vs 已確認） */
+.vs { display:flex; align-items:center; gap: 12px; margin: 14px 0 16px; }
+.vs .vsbox { flex:1; background:#0f172a; border:1px solid #334155; border-radius:12px; padding: 12px; text-align:center; }
+.vs .vsbox .chip {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:44px; height:34px; padding:0 9px; border-radius:11px; border:2px solid;
+  font-size:14px; font-weight:700; margin-bottom:8px;
+}
+.vs .vsbox .chip.empty { background:#1e293b; border-color:#334155; color:#475569; }
+.vs .vsbox .chip.norm  { background:#052e16; border-color:#15803d; color:#86efac; }
+.vs .vsbox b { display:block; font-size:12.5px; color:#e2e8f0; margin-bottom:3px; }
+.vs .vsbox i { display:block; font-style:normal; font-size:11px; color:#64748b; line-height:1.5; }
+.vs .vsx { color:#475569; font-size:13px; font-weight:700; flex-shrink:0; }
+.foot-note { color:#475569; font-size:12px; text-align:center; margin-top:20px; max-width:880px; line-height:1.7; }
+.foot-note a { color:#3b82f6; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>PM&amp;R Tool 使用教學</h1>
+  <p>床邊復健評估工具 · 互動式導覽</p>
+</div>
+
+<div class="rail-wrap">
+  <div class="step-rail" id="rail"></div>
+</div>
+
+<div class="card">
+
+<!-- ══════════ 0 ══════════ -->
+<div class="panel active" data-title="總覽">
+  <div class="ph">
+    <div class="ph-icon blue">🧭</div>
+    <div>
+      <div class="ph-label">Chapter 0</div>
+      <h2>這是什麼？先選一種模式</h2>
+      <p>PM&amp;R Tool 把床邊評估變成一頁一題的問卷，做完直接產出可貼進病歷的文字。開始之前，先搞懂兩種使用模式的差別。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="split">
+      <div class="col-text">
+        <div class="vcards">
+          <div class="vcard amber">
+            <div class="vh">⚡ 訪客模式</div>
+            <ul>
+              <li class="y">免登入，直接開始</li>
+              <li class="n">只存在<b>這台裝置</b></li>
+              <li class="n">不綁病人、無病史</li>
+              <li class="i">產出：<b>單次 note</b></li>
+              <li class="i">臨時評一個、借別人手機</li>
+            </ul>
+          </div>
+          <div class="vcard blue">
+            <div class="vh">🔑 登入模式</div>
+            <ul>
+              <li class="i">Access key ＋ 個人 PIN</li>
+              <li class="y">存<b>伺服器</b>，換手機看得到</li>
+              <li class="y">病人卡片、病史、對比</li>
+              <li class="i">產出：note、對比、週摘要、Email</li>
+              <li class="i">自己顧的病人、要追蹤變化</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout blue">
+          <span class="ci">💡</span>
+          <div><b>評估頁面是同一套</b>——題目、手勢、note 格式完全一樣。差別只在有沒有存到伺服器、綁到病人。</div>
+        </div>
+
+        <h3>隨時可以切換</h3>
+        <div class="flow">
+          <div class="fstep on"><span class="fi">🔑</span><b>登入模式</b><i>Dashboard</i></div>
+          <div class="farr">⇄</div>
+          <div class="fstep"><span class="fi">⚡</span><b>訪客模式</b><i>GuestHome</i></div>
+        </div>
+        <div class="fbranch">
+          <div><b>去 →</b> Dashboard 上的虛線鈕，<strong>不會登出</strong></div>
+          <div><b>← 回</b> 訪客首頁右上「離開訪客模式」</div>
+        </div>
+
+        <div class="callout amber">
+          <span class="ci">⚠️</span>
+          <div>訪客紀錄存在瀏覽器裡。<b>清除瀏覽器資料、換裝置、無痕視窗 → 沒了</b>。重要的用登入模式。</div>
+        </div>
+      </div>
+
+      <div class="col-phone">
+        <div class="phone">
+          <div class="scr plain" style="display:flex;align-items:center;justify-content:center;padding:20px 22px;">
+            <div style="width:100%">
+              <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:22px">
+                <div style="width:52px;height:52px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:11px">🛡️</div>
+                <div style="font-size:15px;font-weight:700;color:#111827">PM&amp;R Bedside Assessment</div>
+                <div style="font-size:11px;color:#9ca3af;margin-top:3px">Enter your access key to continue</div>
+              </div>
+              <div class="inp ph-gray">Access key…</div>
+              <div class="b b-blue" style="opacity:.4">Enter</div>
+              <div class="b b-green" style="margin-top:12px">訪客模式 — 資料只存在此裝置</div>
+              <div style="font-size:10px;color:#9ca3af;text-align:center;margin-top:7px;line-height:1.5">不需登入。評估結果不會上傳，<br>僅供產生病歷文字後複製。</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">開啟後的第一個畫面</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots0"></div><div class="nav-btns"></div></div>
+</div>
+
+<!-- ══════════ 1 ══════════ -->
+<div class="panel" data-title="第一次登入">
+  <div class="ph">
+    <div class="ph-icon indigo">🔑</div>
+    <div>
+      <div class="ph-label">Chapter 1</div>
+      <h2>第一次登入</h2>
+      <p>兩道關卡：全科共用的 access key，加上你個人的 4 位數 PIN。第一次要先建自己的帳號。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="split">
+      <div class="col-text">
+        <h3>主流程</h3>
+        <div class="flow">
+          <div class="fstep on"><span class="fi">🛡️</span><b>Access key</b><i>全科共用<br>跟學長姐要</i></div>
+          <div class="farr">→</div>
+          <div class="fstep on"><span class="fi">👤</span><b>點自己的名字</b><i>住院醫師清單</i></div>
+          <div class="farr">→</div>
+          <div class="fstep on"><span class="fi">🔢</span><b>4 位數 PIN</b><i>個人專屬</i></div>
+          <div class="farr">→</div>
+          <div class="fstep"><span class="fi">🏥</span><b>進入</b><i>病人清單</i></div>
+        </div>
+
+        <h3>第一次使用：先建帳號</h3>
+        <div class="flow">
+          <div class="fstep"><span class="fi">🏷️</span><b>職級＋姓氏</b><i>Y1／Y2／R1–R4／VS</i></div>
+          <div class="farr">→</div>
+          <div class="fstep"><span class="fi">✉️</span><b>Email</b><i>忘記 PIN 時<br>寄驗證碼用</i></div>
+          <div class="farr">→</div>
+          <div class="fstep"><span class="fi">🔢</span><b>設 PIN</b><i>輸入兩次確認</i></div>
+        </div>
+
+        <h3>忘記 PIN</h3>
+        <div class="flow">
+          <div class="fstep"><span class="fi">❓</span><b>按「忘記 PIN」</b><i>在輸入 PIN 的畫面</i></div>
+          <div class="farr">→</div>
+          <div class="fstep"><span class="fi">📬</span><b>收 6 位數驗證碼</b><i>寄到註冊 email</i></div>
+          <div class="farr">→</div>
+          <div class="fstep"><span class="fi">🔁</span><b>設新 PIN</b></div>
+        </div>
+
+        <div class="callout amber">
+          <span class="ci">🔒</span>
+          <div>PIN 存進資料庫前會雜湊，<b>沒有人能還原</b>——忘了只能走 email 重設。</div>
+        </div>
+
+        <div class="callout blue">
+          <span class="ci">↩︎</span>
+          <div>返回鍵：<b>多步驟表單</b>（建帳號、重設 PIN）退回上一步；<b>單步畫面</b>（輸入 PIN、改名字）直接回名單。</div>
+        </div>
+      </div>
+
+      <div class="col-phone">
+        <div class="phone">
+          <div class="scr plain" style="padding:18px">
+            <div style="text-align:center;margin-bottom:14px">
+              <div style="font-size:13px;font-weight:700;color:#111827">選擇你的名字</div>
+              <div style="font-size:10px;color:#9ca3af;margin-top:2px">第一次使用請按下方新增</div>
+            </div>
+            <div class="mrow on m1" style="cursor:default"><div class="ico">R2</div><div class="tt"><b>R2 陳</b></div><div class="rad"><em></em></div></div>
+            <div class="mrow" style="cursor:default"><div class="ico">R1</div><div class="tt"><b>R1 林</b></div><div class="rad"><em></em></div></div>
+            <div class="mrow" style="cursor:default"><div class="ico">Y2</div><div class="tt"><b>Y2 王</b></div><div class="rad"><em></em></div></div>
+            <div class="divl"><i></i><span>或</span><i></i></div>
+            <div class="b b-ghost">＋ 新增住院醫師</div>
+
+            <div style="margin-top:18px;padding-top:14px;border-top:1px dashed #e5e7eb">
+              <div style="text-align:center;font-size:12px;font-weight:700;color:#111827;margin-bottom:3px">輸入 PIN</div>
+              <div style="text-align:center;font-size:10px;color:#9ca3af;margin-bottom:11px">R2 陳</div>
+              <div style="display:flex;gap:9px;justify-content:center;margin-bottom:12px">
+                <div style="width:38px;height:46px;border:2px solid #3b82f6;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#111827">•</div>
+                <div style="width:38px;height:46px;border:2px solid #3b82f6;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#111827">•</div>
+                <div style="width:38px;height:46px;border:2px solid #e5e7eb;border-radius:12px"></div>
+                <div style="width:38px;height:46px;border:2px solid #e5e7eb;border-radius:12px"></div>
+              </div>
+              <div style="text-align:center;font-size:10.5px;color:#3b82f6;font-weight:600">忘記 PIN？</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">選名字 → 輸入 PIN</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots1"></div><div class="nav-btns"></div></div>
+</div>
+
+<!-- ══════════ 2 ══════════ -->
+<div class="panel" data-title="訪客模式">
+  <div class="ph">
+    <div class="ph-icon amber">⚡</div>
+    <div>
+      <div class="ph-label">Chapter 2</div>
+      <h2>訪客模式：最快產出一份 note</h2>
+      <p>不建病人、不寫資料庫、自己挑模組。適合臨時評一個病人然後把文字複製走。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="split">
+      <div class="col-text">
+        <h3>三種開始方式</h3>
+        <div class="qgrid" style="grid-template-columns:1fr">
+          <div class="qbox">
+            <div class="qt">📋 入院完整評估</div>
+            <p>一鍵包含病人背景在內的全部 5 個部分。新入院用這個。</p>
+          </div>
+          <div class="qbox">
+            <div class="qt">🎯 自選模組</div>
+            <p>只追蹤某幾項時用。點下去會顯示模組色，按鈕變成「開始評估（N 個模組）」。</p>
+          </div>
+          <div class="qbox">
+            <div class="qt">🧠 ASIA / ISNCSCI</div>
+            <p>脊髓損傷專用，獨立入口。從這裡進去<b>一定開新的一份</b>，不接續舊草稿。</p>
+          </div>
+        </div>
+
+        <div class="tryit"><span class="pulse"></span>右邊可以真的點點看</div>
+
+        <h3>模組配色</h3>
+        <div class="flow" style="gap:6px">
+          <div class="fstep" style="min-width:0;border-color:#4b5563"><b style="color:#9ca3af">BG</b><i>病人背景</i></div>
+          <div class="fstep" style="min-width:0;border-color:#3b82f6"><b style="color:#93c5fd">1</b><i>認知與情緒</i></div>
+          <div class="fstep" style="min-width:0;border-color:#10b981"><b style="color:#6ee7b7">2</b><i>語言與吞嚥</i></div>
+          <div class="fstep" style="min-width:0;border-color:#8b5cf6"><b style="color:#c4b5fd">3</b><i>神經與動作</i></div>
+          <div class="fstep" style="min-width:0;border-color:#f59e0b"><b style="color:#fcd34d">4</b><i>功能與平衡</i></div>
+        </div>
+        <p style="font-size:12.5px">這組顏色會一路跟著你——進度條、題目按鈕都用同一色。</p>
+
+        <div class="callout amber">
+          <span class="ci">📵</span>
+          <div>紀錄<b>只在這台裝置</b>，不上傳、不同步、不備份。「今日已評估」也只列當天的。要留存請在 note 產出時複製走。</div>
+        </div>
+      </div>
+
+      <div class="col-phone">
+        <div class="phone tall">
+          <div class="scr">
+            <div class="abar">
+              <div style="display:flex;align-items:center;gap:7px">
+                <span class="abar-t">PM&amp;R Tool</span>
+                <span class="tag amber">訪客模式</span>
+              </div>
+              <div style="border:2px solid #e5e7eb;border-radius:11px;padding:5px 8px;font-size:10px;color:#6b7280;font-weight:600">↩ 離開</div>
+            </div>
+            <div class="body">
+              <div class="wcard">
+                <div class="wcard-t">開始評估</div>
+                <div class="lbl">病歷號（選填）</div>
+                <div class="inp ph-gray">e.g. 1234567</div>
+                <div class="lbl">評估日期</div>
+                <div class="inp">2026/07/30</div>
+
+                <button class="b b-blue split-row" id="g-admit">
+                  <span style="display:flex;align-items:center;gap:9px">
+                    <span style="font-size:15px">📋</span>
+                    <span class="lt"><span>入院完整評估</span><span class="sub" style="display:block">含病人背景及 4 個模組</span></span>
+                  </span>
+                  <span>›</span>
+                </button>
+
+                <div class="divl"><i></i><span>或選擇模組</span><i></i></div>
+
+                <div id="g-mods">
+                  <button class="mrow m0" data-m="0"><div class="ico">BG</div><div class="tt"><b>病人背景</b><i>社會史、居住、病前功能</i></div><div class="rad"><em></em></div></button>
+                  <button class="mrow m1" data-m="1"><div class="ico">1</div><div class="tt"><b>認知與情緒</b><i>（GCS、PHQ-2、4AT、MMSE）</i></div><div class="rad"><em></em></div></button>
+                  <button class="mrow m2" data-m="2"><div class="ico">2</div><div class="tt"><b>語言與吞嚥</b><i>（LAST-A、FOIS、RSST、飲水測試）</i></div><div class="rad"><em></em></div></button>
+                  <button class="mrow m3" data-m="3"><div class="ico">3</div><div class="tt"><b>神經與動作</b><i>（Brunnstrom、MMT、DTR、MAS…）</i></div><div class="rad"><em></em></div></button>
+                  <button class="mrow m4" data-m="4"><div class="ico">4</div><div class="tt"><b>功能與平衡</b><i>（平衡、FAC、Barthel、mRS）</i></div><div class="rad"><em></em></div></button>
+                </div>
+
+                <button class="b b-blue" id="g-start" style="opacity:.4;margin-top:3px">請至少選擇一個模組</button>
+
+                <div class="divl"><i></i><span>脊髓損傷評估</span><i></i></div>
+                <button class="b b-ind split-row">
+                  <span style="display:flex;align-items:center;gap:9px">
+                    <span style="width:27px;height:27px;border-radius:9px;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px">🧠</span>
+                    <span class="lt"><span>ASIA / ISNCSCI</span><span class="sub" style="display:block;color:#818cf8">脊髓損傷神經學分類</span></span>
+                  </span>
+                  <span>›</span>
+                </button>
+              </div>
+
+              <div class="wcard">
+                <div class="wcard-t">📋 今日已評估 <span style="font-weight:400;color:#9ca3af;font-size:11px">(1)</span></div>
+                <div class="pcard" style="margin-bottom:0">
+                  <div class="top" style="display:flex;align-items:center;gap:9px">
+                    <div style="width:30px;height:30px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center">📋</div>
+                    <div style="flex:1">
+                      <div class="bed">Bed 4E1-13-2</div>
+                      <div class="meta"><span>09:24 · 5 個模組</span></div>
+                    </div>
+                    <div style="color:#d1d5db">🗑</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">訪客首頁（可互動）</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots2"></div><div class="nav-btns"></div></div>
+</div>
+
+<!-- ══════════ 3 ══════════ -->
+<div class="panel" data-title="病人管理">
+  <div class="ph">
+    <div class="ph-icon blue">🛏️</div>
+    <div>
+      <div class="ph-label">Chapter 3</div>
+      <h2>登入模式：管理你的病人</h2>
+      <p>主畫面只會顯示<strong>掛在你名下</strong>的病人，依病房分組、依床號排序。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="split">
+      <div class="col-text">
+        <h3>新增病人：Bed ID 怎麼組出來</h3>
+        <div class="flow" style="gap:4px">
+          <div class="fstep"><b>Ward</b><i>4E1</i></div>
+          <div class="farr">＋</div>
+          <div class="fstep"><b>床號</b><i>13</i></div>
+          <div class="farr">＋</div>
+          <div class="fstep"><b>床位</b><i>2</i></div>
+          <div class="farr">＝</div>
+          <div class="fstep on"><b>4E1-13-2</b><i>即時預覽</i></div>
+        </div>
+        <p style="font-size:12.5px">另外填 <strong>Resident</strong>（預設你自己）和<strong>病歷號</strong>。送出前先看一眼預覽的 Bed ID 有沒有打錯。</p>
+
+        <div class="callout green">
+          <span class="ci">🔐</span>
+          <div><b>只收病歷號和床號，沒有姓名欄位。</b>不要把姓名或身分證號填進病歷號欄——它會出現在所有畫面和寄出的 email。</div>
+        </div>
+
+        <h3>久沒評估會怎樣</h3>
+        <div class="tline">
+          <div class="tbar">
+            <span style="flex:7;background:#334155"></span>
+            <span style="flex:7;background:#b45309"></span>
+            <span style="flex:14;background:#b91c1c"></span>
+          </div>
+          <div class="marks">
+            <div><b style="color:#94a3b8">第 7 天</b><i>頁面上方黃色提示，可按 × 關掉</i></div>
+            <div><b style="color:#fdba74">第 14 天</b><i>卡片出現紅色標籤，預告清除</i></div>
+            <div><b style="color:#fca5a5">第 28 天</b><i>清除</i></div>
+          </div>
+        </div>
+        <p style="font-size:12.5px">出院或轉走的病人建議直接 <strong>Remove</strong>（連同所有評估一起刪，會再問一次），清單才不會愈長愈亂。</p>
+
+        <h3>右上角三顆鈕</h3>
+        <div class="gcards">
+          <div class="gcard"><span class="gi">✉️</span><b>Email</b><i>今日結果<br>多選病人寄出</i></div>
+          <div class="gcard"><span class="gi">📄</span><b>Weekly</b><i>近 6 日摘要<br>可合併多人</i></div>
+          <div class="gcard"><span class="gi">➕</span><b>New</b><i>新增病人</i></div>
+        </div>
+      </div>
+
+      <div class="col-phone">
+        <div class="phone tall">
+          <div class="scr">
+            <div class="abar">
+              <div>
+                <div class="abar-t">PM&amp;R Tool</div>
+                <div style="font-size:10px;color:#3b82f6;font-weight:600;margin-top:1px">👤 R2 陳 <span style="color:#9ca3af;font-weight:400">· switch</span></div>
+              </div>
+              <div style="display:flex;gap:5px">
+                <div style="border:2px solid #a7f3d0;background:#ecfdf5;color:#047857;border-radius:11px;padding:5px 8px;font-size:10px;font-weight:700">✉ Email</div>
+                <div style="border:2px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;border-radius:11px;padding:5px 8px;font-size:10px;font-weight:700">📄 Weekly</div>
+                <div style="background:#3b82f6;color:#fff;border-radius:11px;padding:5px 9px;font-size:10px;font-weight:700">＋New</div>
+              </div>
+            </div>
+            <div class="body">
+              <div style="border:2px dashed #e5e7eb;border-radius:15px;padding:10px 12px;display:flex;align-items:center;gap:7px;background:#fff;margin-bottom:12px">
+                <span style="color:#f59e0b">⚡</span>
+                <b style="font-size:11.5px;color:#6b7280">訪客模式</b>
+                <span style="font-size:9.5px;color:#9ca3af">不綁病人 · 自選模組 · 只產 note</span>
+              </div>
+
+              <div class="alert amber">
+                <div style="font-weight:700;margin-bottom:5px">⚠️ 久未評估的病人</div>
+                <div style="display:flex;justify-content:space-between"><span><b>Bed 4W1-21-1</b> · 已 9 天未評估</span><span style="color:#fbbf24">✕</span></div>
+                <div style="font-size:9.5px;color:#f59e0b;margin-top:5px">Consider removing patients who are no longer under your care.</div>
+              </div>
+
+              <div class="wardhead"><span class="tag indigo">4E1</span><i></i><em>2 patients</em></div>
+              <div class="pcard">
+                <div class="top">
+                  <div class="chips"><span class="tag blue">🛏 Bed 4E1-13-2</span><span style="font-size:9.5px;color:#9ca3af">📋 6 assessments</span></div>
+                  <div class="bed">Bed 4E1-13-2</div>
+                  <div class="meta"><span>📅 Last: 2026/07/30 (Thu)</span><span>👤 R2 陳</span></div>
+                </div>
+                <div class="acts"><span>✎ Edit</span><span class="del">🗑 Remove</span></div>
+              </div>
+              <div class="pcard">
+                <div class="top">
+                  <div class="chips">
+                    <span class="tag blue">🛏 Bed 4E1-18-1</span>
+                    <span class="tag red">⚠ 16 天未評估 · 第 28 天清除</span>
+                  </div>
+                  <div class="bed">Bed 4E1-18-1</div>
+                  <div class="meta"><span>📅 Last: 2026/07/14 (Tue)</span><span>👤 R2 陳</span></div>
+                </div>
+                <div class="acts"><span>✎ Edit</span><span class="del">🗑 Remove</span></div>
+              </div>
+
+              <div class="wardhead"><span class="tag indigo">4W1</span><i></i><em>1 patient</em></div>
+              <div class="pcard">
+                <div class="top">
+                  <div class="chips"><span class="tag blue">🛏 Bed 4W1-21-1</span><span style="font-size:9.5px;color:#9ca3af">📋 2 assessments</span></div>
+                  <div class="bed">Bed 4W1-21-1</div>
+                  <div class="meta"><span>📅 Last: 2026/07/21 (Tue)</span></div>
+                </div>
+                <div class="acts"><span>✎ Edit</span><span class="del">🗑 Remove</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">主畫面（Dashboard）</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots3"></div><div class="nav-btns"></div></div>
+</div>
+
+<!-- ══════════ 4 ══════════ -->
+<div class="panel" data-title="跑一次評估">
+  <div class="ph">
+    <div class="ph-icon violet">📝</div>
+    <div>
+      <div class="ph-label">Chapter 4</div>
+      <h2>跑一次評估</h2>
+      <p>一題一頁往下走。這一章最重要的兩件事：<strong>每列點開才評分</strong>，以及<strong>「沒評」和「正常」是兩回事</strong>。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="split">
+      <div class="col-text">
+        <h3>一列一項，點開才展開</h3>
+        <div class="flow">
+          <div class="fstep"><span class="fi">📄</span><b>收合</b><i>名稱 ＋ 現值一格</i></div>
+          <div class="farr">→</div>
+          <div class="fstep on"><span class="fi">👆</span><b>點一下</b><i>展開評分表</i></div>
+          <div class="farr">→</div>
+          <div class="fstep"><span class="fi">✅</span><b>選分數</b><i>自動填回並收合</i></div>
+        </div>
+        <p style="font-size:12.5px">同時只會展開一列，所以一頁看得完全部項目，<strong>哪些還沒評一目了然</strong>。</p>
+
+        <div class="tryit"><span class="pulse"></span>右邊點點看：展開、評分、全部正常</div>
+
+        <h3 style="color:#fca5a5">「沒評」不等於「正常」</h3>
+        <div class="vs">
+          <div class="vsbox">
+            <span class="chip empty">–</span>
+            <b>還沒評</b>
+            <i>預設狀態<br><b>不會出現在 note</b></i>
+          </div>
+          <div class="vsx">≠</div>
+          <div class="vsbox">
+            <span class="chip norm">2+</span>
+            <b>確認正常</b>
+            <i>你按過「全部正常」<br>或自己選了值</i>
+          </div>
+        </div>
+        <p style="font-size:12.5px">預設值是<strong>空的</strong>，不是正常值——否則病歷上分不出「確認過正常」和「根本沒測」。確認正常請按區塊上方的<strong>「全部正常」</strong>，會變綠色鎖住。</p>
+
+        <div class="callout green">
+          <span class="ci">✅</span>
+          <div>留白比亂填安全：沒評的項目不會被誤讀成你評過。</div>
+        </div>
+
+        <h3>導覽</h3>
+        <div class="gcards">
+          <div class="gcard"><span class="gi">📊</span><b>點進度條</b><i>跳出題目清單<br>直接跳任一題</i></div>
+          <div class="gcard"><span class="gi">💾</span><b>暫存</b><i>中途存檔<br>（綁病人時才有）</i></div>
+          <div class="gcard"><span class="gi">↻</span><b>重設</b><i>清空重來<br>會先存進歷史</i></div>
+        </div>
+        <p style="font-size:12.5px">最後一題是 <strong>Additional Remarks</strong> 補文字備註，然後按 <strong>Generate Note</strong>。登入模式會同時存進資料庫。</p>
+      </div>
+
+      <div class="col-phone">
+        <div class="phone tall">
+          <div class="scr plain">
+            <div class="abar" style="padding:9px 12px">
+              <div style="display:flex;align-items:center;gap:7px">
+                <span style="color:#6b7280">←</span>
+                <div>
+                  <div style="font-size:10px;font-weight:600;color:#6b7280">Bed 4E1-13-2</div>
+                  <div style="font-size:10px;color:#6b7280">2026/07/30 (Thu)</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:5px">
+                <div style="border:2px solid #fcd34d;background:#fffbeb;color:#b45309;border-radius:11px;padding:5px 8px;font-size:10px;font-weight:700">暫存</div>
+                <div style="width:30px;height:30px;border-radius:11px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;color:#6b7280">↻</div>
+              </div>
+            </div>
+
+            <div class="pgw" style="border-bottom:1px solid #f3f4f6">
+              <div class="row"><b style="color:#6d28d9">Module 3 · Neurological &amp; Motor</b><span>62%</span></div>
+              <div class="track" style="background:#ede9fe"><div class="fill" style="background:#8b5cf6;width:62%"></div></div>
+              <div class="cap">8 of 13 questions · tap to jump</div>
+            </div>
+
+            <div style="padding:13px 12px 10px">
+              <div style="font-size:14px;font-weight:700;color:#111827;margin-bottom:2px">Deep Tendon Reflexes</div>
+              <div style="font-size:10.5px;color:#9ca3af;margin-bottom:11px">未評的項目留空，確認正常請按下方按鈕</div>
+
+              <button class="allnorm" id="dtr-all">✓✓ 全部正常</button>
+
+              <div id="dtr-rows">
+                <div class="erow" data-row>
+                  <div class="hd"><span class="badge">R</span><div class="nm"><b>Biceps 肱二頭肌</b><i>C5–C6</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="bd"><div class="strip">
+                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                  </div></div>
+                </div>
+                <div class="erow" data-row>
+                  <div class="hd"><span class="badge">L</span><div class="nm"><b>Biceps 肱二頭肌</b><i>C5–C6</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="bd"><div class="strip">
+                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                  </div></div>
+                </div>
+                <div class="erow" data-row>
+                  <div class="hd"><span class="badge">R</span><div class="nm"><b>Patellar 膝反射</b><i>L2–L4</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="bd"><div class="strip">
+                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                  </div></div>
+                </div>
+                <div class="erow" data-row>
+                  <div class="hd"><span class="badge">L</span><div class="nm"><b>Patellar 膝反射</b><i>L2–L4</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="bd"><div class="strip">
+                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                  </div></div>
+                </div>
+              </div>
+              <div class="hint" id="dtr-hint">點一列展開評分表 · 右邊 <b>–</b> 代表還沒評</div>
+            </div>
+
+            <div class="bnav">
+              <div class="sq">‹</div>
+              <div class="go">Next ›</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">評估頁（可互動）</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots4"></div><div class="nav-btns"></div></div>
+</div>
+
+<!-- ══════════ 5 ══════════ -->
+<div class="panel" data-title="ASIA">
+  <div class="ph">
+    <div class="ph-icon indigo">🧠</div>
+    <div>
+      <div class="ph-label">Chapter 5</div>
+      <h2>ASIA / ISNCSCI</h2>
+      <p>76 個格子的評分表。設計成<strong>從正常往下扣</strong>——大部分格子不用動，只點你測出來有問題的。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="split">
+      <div class="col-text">
+        <h3>三個手勢</h3>
+        <div class="gcards">
+          <div class="gcard ok"><span class="gi">👆</span><b>點一下</b><i>往下扣一分<br>感覺 2→1→0→2<br>肌力 5→…→0→5</i></div>
+          <div class="gcard ok"><span class="gi">🫸</span><b>長按 0.5 秒</b><i>設成 <b>NT</b><br>Android 會震一下</i></div>
+          <div class="gcard no"><span class="gi">👋</span><b>按著滑動</b><i>分數<b>不動</b><br>超過 10px<br>＝判定為捲動</i></div>
+        </div>
+
+        <div class="tryit"><span class="pulse"></span>右邊的格子可以點、可以長按</div>
+
+        <div class="callout amber">
+          <span class="ci">↩︎</span>
+          <div><b>沒有「復原」。</b>點錯了就繼續點回去——分數是循環的，多點幾下會轉回原值。</div>
+        </div>
+
+        <h3>版面</h3>
+        <div class="flow" style="gap:4px">
+          <div class="fstep" style="border-color:#1d4ed8"><b style="color:#93c5fd">◂ 左</b><i>LT｜PP</i></div>
+          <div class="farr"></div>
+          <div class="fstep"><b>節段</b><i>C5<br>＋解剖地標</i></div>
+          <div class="farr"></div>
+          <div class="fstep" style="border-color:#b91c1c"><b style="color:#fca5a5">右 ▸</b><i>LT｜PP</i></div>
+        </div>
+        <p style="font-size:12.5px">上方分頁切 <strong>頸 C／胸 T／腰薦 L–S</strong>（肌力再多一層上肢／下肢）。中間欄會寫出<strong>該節的解剖地標</strong>，不用背，照著測。下方即時累計總分。</p>
+
+        <h3>兩個省時功能</h3>
+        <div class="qgrid">
+          <div class="qbox">
+            <div class="qt">⬇️ ↓0 批次歸零</div>
+            <p>完全性損傷時，按 <b>↓0</b> 再點某節段 → 那一節<b>以下全部歸零</b>（左右、LT＋PP）。</p>
+            <span class="qw">⚠️ 頁面上破壞力最大的動作，按前先確認平面</span>
+          </div>
+          <div class="qbox">
+            <div class="qt">🖼 官方 worksheet</div>
+            <p>右上角圖示打開 <b>ISNCSCI 官方評分表</b>，兩頁可切換，支援雙指縮放／滾輪／雙擊／拖曳。</p>
+            <span class="qw">忘記 AIS 分級規則時直接查</span>
+          </div>
+        </div>
+
+        <div class="callout blue">
+          <span class="ci">💾</span>
+          <div>會<b>自動存本機草稿</b>，重新整理不會清空那 76 格。但從首頁 ASIA 入口重新進入會開全新的一份。</div>
+        </div>
+
+        <h3>做完會自動算出</h3>
+        <div class="flow" style="gap:4px">
+          <div class="fstep on"><b>NLI</b><i>神經學損傷平面</i></div>
+          <div class="fstep on"><b>AIS</b><i>A–E 分級</i></div>
+          <div class="fstep on"><b>總分</b><i>LT／PP／肌力</i></div>
+          <div class="fstep"><b>ZPP</b><i>AIS＝A 時</i></div>
+        </div>
+      </div>
+
+      <div class="col-phone">
+        <div class="phone tall">
+          <div class="scr plain">
+            <div class="abar" style="padding:9px 12px">
+              <div style="display:flex;align-items:center;gap:7px">
+                <span style="color:#6b7280">←</span>
+                <div><div style="font-size:11px;font-weight:700;color:#111827">ASIA / ISNCSCI</div>
+                <div style="font-size:9.5px;color:#9ca3af">Bed 4E1-13-2</div></div>
+              </div>
+              <div style="display:flex;gap:5px;align-items:center">
+                <div style="border:2px solid #e0e7ff;background:#eef2ff;color:#4338ca;border-radius:11px;padding:5px 8px;font-size:10px;font-weight:700">🖼 參考圖</div>
+              </div>
+            </div>
+
+            <div style="padding:11px 10px">
+              <div class="asia-tabs">
+                <button class="at on">感覺</button><button class="at">肌力</button>
+              </div>
+              <div class="asia-tabs">
+                <button class="at on" style="background:#6366f1">頸 C</button><button class="at">胸 T</button><button class="at">腰薦 L–S</button>
+              </div>
+
+              <div class="agrid" id="asia-grid">
+                <div class="apanel l">
+                  <div class="hd">◂ Left</div>
+                  <div class="sub"><span class="lt">LT</span><span class="pp">PP</span></div>
+                  <div class="arow"><button class="cell full" data-s="2">2</button><button class="cell full" data-s="2">2</button></div>
+                  <div class="arow"><button class="cell full" data-s="2">2</button><button class="cell full" data-s="2">2</button></div>
+                  <div class="arow"><button class="cell full" data-s="2">2</button><button class="cell full" data-s="2">2</button></div>
+                  <div class="arow"><button class="cell full" data-s="2">2</button><button class="cell full" data-s="2">2</button></div>
+                </div>
+                <div class="acen">
+                  <div class="sp32"><div class="zbtn">↓0</div></div>
+                  <div class="sp20"></div>
+                  <div class="lv"><b>C5</b><i>肘前窩外側</i></div>
+                  <div class="lv"><b>C6</b><i>拇指</i></div>
+                  <div class="lv"><b>C7</b><i>中指</i></div>
+                  <div class="lv"><b>C8</b><i>小指</i></div>
+                </div>
+                <div class="apanel r">
+                  <div class="hd">Right ▸</div>
+                  <div class="sub"><span class="lt">LT</span><span class="pp">PP</span></div>
+                  <div class="arow"><button class="cell full" data-s="2">2</button><button class="cell full" data-s="2">2</button></div>
+                  <div class="arow"><button class="cell part" data-s="1">1</button><button class="cell full" data-s="2">2</button></div>
+                  <div class="arow"><button class="cell zero" data-s="0">0</button><button class="cell zero" data-s="0">0</button></div>
+                  <div class="arow"><button class="cell nt" data-s="NT">NT</button><button class="cell zero" data-s="0">0</button></div>
+                </div>
+              </div>
+
+              <div class="hint" id="asia-hint">👆 點格子扣分 · 長按設 NT</div>
+
+              <div class="tot">
+                <div><b>LT Total</b><em>78<span style="font-size:9px;font-weight:400">/112</span></em><i>R: 34 / L: 44</i></div>
+                <div><b>PP Total</b><em>71<span style="font-size:9px;font-weight:400">/112</span></em><i>R: 29 / L: 42</i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">ASIA 感覺分頁（可互動）</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots5"></div><div class="nav-btns"></div></div>
+</div>
+
+<!-- ══════════ 6 ══════════ -->
+<div class="panel" data-title="產出報表">
+  <div class="ph">
+    <div class="ph-icon green">📄</div>
+    <div>
+      <div class="ph-label">Chapter 6</div>
+      <h2>產出：note、對比、摘要</h2>
+      <p>四種產出，用途不一樣。共通的是都能<strong>複製 / 下載 .txt / 寄 email / 存回病人紀錄</strong>。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <div class="split">
+      <div class="col-text">
+        <div class="qgrid">
+          <div class="qbox">
+            <div class="qt">📝 Note</div>
+            <p>單次評估的完整文字，直接貼病歷。</p>
+            <span class="qw">← 評估最後按 Generate Note</span>
+          </div>
+          <div class="qbox">
+            <div class="qt">📈 Progress Note</div>
+            <p>只寫「這次和上次差在哪」，寫進展用。</p>
+            <span class="qw">← 病史頁選<b>兩筆</b></span>
+          </div>
+          <div class="qbox">
+            <div class="qt">🔍 Compare</div>
+            <p>兩次評估並排，變好變壞用顏色標。</p>
+            <span class="qw">← 病史頁選<b>兩筆</b></span>
+          </div>
+          <div class="qbox">
+            <div class="qt">🗓 Weekly Summary</div>
+            <p>近 6 日整理，可一次多位病人合成一份。</p>
+            <span class="qw">← 主畫面 Weekly</span>
+          </div>
+        </div>
+
+        <h3>怎麼走到那裡</h3>
+        <div class="flow">
+          <div class="fstep"><span class="fi">🛏️</span><b>點病人卡片</b></div>
+          <div class="farr">→</div>
+          <div class="fstep"><span class="fi">📜</span><b>病史頁</b><i>由新到舊<br>帶 GCS／MMSE／Barthel</i></div>
+          <div class="farr">→</div>
+          <div class="fstep on"><span class="fi">☑️</span><b>挑兩筆</b><i>→ Compare<br>或 Progress Note</i></div>
+        </div>
+
+        <h3>共通的四個動作</h3>
+        <div class="flow" style="gap:4px">
+          <div class="fstep"><b>📋 Copy</b><i>2 秒打勾回饋</i></div>
+          <div class="fstep"><b>⬇ .txt</b><i>下載</i></div>
+          <div class="fstep"><b>✉ Email</b><i>寄出</i></div>
+          <div class="fstep"><b>💾 Save</b><i>存回病人紀錄</i></div>
+        </div>
+
+        <div class="callout amber">
+          <span class="ci">✉️</span>
+          <div>Email 可以寄到<b>任何你打的地址</b>，內容含病歷號與床號——<b>寄出前確認收件人</b>。</div>
+        </div>
+      </div>
+
+      <div class="col-phone">
+        <div class="phone tall">
+          <div class="scr plain" style="background:#f3f4f6;display:flex;align-items:center;padding:12px">
+            <div class="mmodal" style="width:100%">
+              <div class="mh">
+                <b>Progress Note</b>
+                <i>2026/07/23 → 2026/07/30 · Bed 4E1-13-2</i>
+              </div>
+<pre>PM&amp;R Progress Note
+Bed: 4E1-13-2   MRN: 1234567
+Interval: 2026/07/23 → 2026/07/30 (7 days)
+
+INTERVAL CHANGES
+- GCS: 13 (E3V4M6) → 15 (E4V5M6)
+- Barthel Index: 35 → 55  (improved)
+- FAC: 1 → 3
+- Brunnstrom UE (R): III → IV
+- MMT R hip flexion: 3 → 4
+
+UNCHANGED
+- DTR: all 2+ (confirmed normal)
+- MAS R elbow: 1+
+
+NOT ASSESSED THIS VISIT
+- MMSE, RSST
+
+IMPRESSION
+Continued functional gain; ambulation
+improved to supervision level.</pre>
+              <div class="mf">
+                <div class="b b-ghost b-sm">📋 Copy</div>
+                <div class="b b-ghost b-sm">⬇ .txt</div>
+                <div class="b b-ghost b-sm">✉ Email</div>
+                <div class="b b-blue b-sm">Save</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">Progress Note（示意內容）</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots6"></div><div class="nav-btns"></div></div>
+</div>
+
+<!-- ══════════ 7 ══════════ -->
+<div class="panel" data-title="常見問題">
+  <div class="ph">
+    <div class="ph-icon slate">❓</div>
+    <div>
+      <div class="ph-label">Chapter 7</div>
+      <h2>常見問題</h2>
+      <p>幾個實際會踩到的狀況。</p>
+    </div>
+  </div>
+  <div class="pb">
+    <h3>資料相關</h3>
+    <table>
+      <tr><th style="width:34%">問題</th><th>答案</th></tr>
+      <tr><td><strong>訪客紀錄留多久？</strong></td><td>直到你清除瀏覽器資料。首頁只列今天的，舊的還在。無痕視窗關掉就沒了。</td></tr>
+      <tr><td><strong>換手機看得到嗎？</strong></td><td>登入模式可以，訪客模式不行。</td></tr>
+      <tr><td><strong>病人會被自動刪除嗎？</strong></td><td>7 天提示 → 14 天紅標籤 → 28 天清除。出院請直接 Remove。</td></tr>
+      <tr><td><strong>沒網路能用嗎？</strong></td><td>訪客模式的評估可以填；登入、病人清單、存檔、寄信都要網路。</td></tr>
+      <tr><td><strong>ASIA 評到一半重新整理？</strong></td><td>不會清空（有本機草稿）。但從首頁 ASIA 入口重進會開全新的。</td></tr>
+    </table>
+
+    <h3>操作相關</h3>
+    <table>
+      <tr><th style="width:34%">問題</th><th>答案</th></tr>
+      <tr><td><strong>ASIA 點錯了？</strong></td><td>沒有復原鍵，繼續點回去（分數循環）。</td></tr>
+      <tr><td><strong>捲動會改到分數嗎？</strong></td><td>不會。移動超過 10px 就判定為捲動。</td></tr>
+      <tr><td><strong>某項目沒測怎麼填？</strong></td><td>留空。空白＝沒評，不會進 note。ASIA 用長按設 <code>NT</code>。</td></tr>
+      <tr><td><strong>「全部正常」能取消嗎？</strong></td><td>按完會鎖成綠色，但個別項目仍可點開改值。</td></tr>
+      <tr><td><strong>做到一半要離開？</strong></td><td>綁病人時按右上「暫存」；訪客模式會自動留在本機。</td></tr>
+      <tr><td><strong>突然跳回 access key 頁？</strong></td><td>登入逾時，重新輸入即可，已存資料不受影響。</td></tr>
+    </table>
+
+    <div class="callout green">
+      <span class="ci">🔐</span>
+      <div><b>只收病歷號與床號，沒有姓名欄位。</b>不要把姓名或身分證號打進病歷號欄——它會出現在所有畫面、note 與 email 裡。</div>
+    </div>
+
+    <div class="callout blue">
+      <span class="ci">🎉</span>
+      <div>教學結束。建議<b>先用訪客模式空跑一次</b>熟悉手勢，再拿去床邊用。<br>卡住的話，把你在哪一頁、按了什麼、看到什麼截圖下來問。</div>
+    </div>
+  </div>
+  <div class="pf"><div class="dots" id="dots7"></div><div class="nav-btns"></div></div>
+</div>
+
+</div>
+
+<div class="foot-note">
+  PM&amp;R Bedside Assessment Pro · 教學文件<br>
+  介面若與此處不符，以實際 app 為準（教學隨版本更新）。
+</div>
+
+<script>
+(function () {
+  const panels = Array.from(document.querySelectorAll('.panel'));
+  const rail = document.getElementById('rail');
+  const N = panels.length;
+  let cur = 0;
+
+  // ── build rail ──
+  panels.forEach((p, i) => {
+    const item = document.createElement('div');
+    item.className = 'rail-item';
+    const b = document.createElement('button');
+    b.className = 'rail-btn';
+    b.innerHTML = '<span class="rail-num">' + i + '</span>' + p.dataset.title;
+    b.addEventListener('click', () => go(i));
+    item.appendChild(b);
+    rail.appendChild(item);
+  });
+  const railBtns = Array.from(rail.querySelectorAll('.rail-btn'));
+
+  // ── build dots + nav buttons in each footer ──
+  panels.forEach((p, i) => {
+    const dots = p.querySelector('.dots');
+    for (let k = 0; k < N; k++) {
+      const d = document.createElement('div');
+      d.className = 'dot';
+      dots.appendChild(d);
+    }
+    const nav = p.querySelector('.nav-btns');
+    const prev = document.createElement('button');
+    prev.className = 'btn btn-prev';
+    prev.textContent = '上一步';
+    prev.disabled = i === 0;
+    prev.addEventListener('click', () => go(i - 1));
+
+    const next = document.createElement('button');
+    next.className = 'btn ' + (i === N - 1 ? 'btn-finish' : 'btn-next');
+    next.textContent = i === N - 1 ? '回到開頭' : '下一步';
+    next.addEventListener('click', () => go(i === N - 1 ? 0 : i + 1));
+
+    nav.appendChild(prev);
+    nav.appendChild(next);
+  });
+
+  function go(i) {
+    if (i < 0 || i >= N) return;
+    cur = i;
+    panels.forEach((p, k) => p.classList.toggle('active', k === i));
+    railBtns.forEach((b, k) => {
+      b.classList.toggle('active', k === i);
+      b.classList.toggle('done', k < i);
+    });
+    panels[i].querySelectorAll('.dot').forEach((d, k) => {
+      d.classList.toggle('active', k === i);
+      d.classList.toggle('done', k < i);
+    });
+    const activeBtn = railBtns[i];
+    if (activeBtn.scrollIntoView) activeBtn.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight') go(cur + 1);
+    if (e.key === 'ArrowLeft') go(cur - 1);
+  });
+
+  go(0);
+
+  // ══════════ Ch2: module picker ══════════
+  const modWrap = document.getElementById('g-mods');
+  if (modWrap) {
+    const startBtn = document.getElementById('g-start');
+    const admitBtn = document.getElementById('g-admit');
+    modWrap.querySelectorAll('.mrow').forEach(row => {
+      row.addEventListener('click', () => {
+        row.classList.toggle('on');
+        const n = modWrap.querySelectorAll('.mrow.on').length;
+        startBtn.textContent = n === 0 ? '請至少選擇一個模組' : '開始評估（' + n + ' 個模組）';
+        startBtn.style.opacity = n === 0 ? '.4' : '1';
+        // 有選模組時，入院完整評估退成次要樣式（跟 app 一致）
+        admitBtn.className = n > 0 ? 'b b-ghost split-row' : 'b b-blue split-row';
+      });
+    });
+  }
+
+  // ══════════ Ch4: expandable rows ══════════
+  const dtrRows = document.getElementById('dtr-rows');
+  if (dtrRows) {
+    const hint = document.getElementById('dtr-hint');
+    const allBtn = document.getElementById('dtr-all');
+    const rows = Array.from(dtrRows.querySelectorAll('.erow'));
+
+    rows.forEach(row => {
+      const val = row.querySelector('.val');
+      row.querySelector('.hd').addEventListener('click', () => {
+        const wasOpen = row.classList.contains('open');
+        rows.forEach(r => r.classList.remove('open'));
+        row.classList.toggle('open', !wasOpen);
+        if (!wasOpen) hint.innerHTML = '選一個分數 · 選完會填進右邊那格';
+      });
+      row.querySelectorAll('.sb').forEach(sb => {
+        sb.addEventListener('click', () => {
+          row.querySelectorAll('.sb').forEach(x => x.classList.remove('on', 'blue'));
+          sb.classList.add('on', 'blue');
+          val.textContent = sb.textContent;
+          val.className = 'val ' + (sb.textContent === '2+' ? 'norm' : 'set');
+          row.classList.remove('open');
+          syncAll();
+        });
+      });
+    });
+
+    function syncAll() {
+      const allNormal = rows.every(r => r.querySelector('.val').textContent === '2+');
+      allBtn.classList.toggle('done', allNormal);
+      allBtn.textContent = allNormal ? '✓✓ 已全部標記正常' : '✓✓ 全部正常';
+      const unrated = rows.filter(r => r.querySelector('.val').textContent === '–').length;
+      hint.innerHTML = unrated === 0
+        ? '全部評完了 · 按 <b>Next</b> 到下一題'
+        : '還有 <b>' + unrated + '</b> 項沒評（右邊顯示 <b>–</b>）';
+    }
+
+    allBtn.addEventListener('click', () => {
+      if (allBtn.classList.contains('done')) return;
+      rows.forEach(r => {
+        r.classList.remove('open');
+        const v = r.querySelector('.val');
+        v.textContent = '2+';
+        v.className = 'val norm';
+        r.querySelectorAll('.sb').forEach(x => x.classList.remove('on', 'blue'));
+        r.querySelectorAll('.sb')[2].classList.add('on', 'green');
+      });
+      syncAll();
+    });
+  }
+
+  // ══════════ Ch5: ASIA cells ══════════
+  const grid = document.getElementById('asia-grid');
+  if (grid) {
+    const hint = document.getElementById('asia-hint');
+    const SEQ = ['2', '1', '0'];           // 感覺分頁：2 → 1 → 0 → 2
+    const CLS = { '2': 'full', '1': 'part', '0': 'zero', 'NT': 'nt' };
+
+    grid.querySelectorAll('.cell').forEach(cell => {
+      let timer = null, startX = 0, startY = 0, voided = false, longFired = false;
+
+      function paint(v) {
+        cell.dataset.s = v;
+        cell.textContent = v;
+        cell.className = 'cell ' + CLS[v];
+      }
+      function clear() {
+        clearTimeout(timer);
+        timer = null;
+        cell.classList.remove('press');
+      }
+
+      cell.addEventListener('pointerdown', e => {
+        voided = false; longFired = false;
+        startX = e.clientX; startY = e.clientY;
+        cell.classList.add('press');
+        timer = setTimeout(() => {
+          if (voided) return;
+          longFired = true;
+          paint('NT');
+          hint.innerHTML = '長按 → 設成 <b>NT</b>（無法測試）';
+          if (navigator.vibrate) navigator.vibrate(20);
+          cell.classList.remove('press');
+        }, 550);
+      });
+
+      cell.addEventListener('pointermove', e => {
+        if (!timer && !cell.classList.contains('press')) return;
+        if (Math.abs(e.clientX - startX) > 10 || Math.abs(e.clientY - startY) > 10) {
+          voided = true;
+          clear();
+          hint.innerHTML = '移動超過 10px → <b>判定為捲動</b>，分數不動';
+        }
+      });
+
+      cell.addEventListener('pointerup', () => {
+        clear();
+        if (voided || longFired) return;
+        const now = cell.dataset.s;
+        const i = SEQ.indexOf(now);
+        const next = i === -1 ? '2' : SEQ[(i + 1) % SEQ.length];  // NT 點一下回到 2
+        paint(next);
+        hint.innerHTML = '點一下 → 扣一分（<b>2 → 1 → 0 → 2</b>）';
+      });
+
+      cell.addEventListener('pointerleave', () => { voided = true; clear(); });
+      cell.addEventListener('contextmenu', e => e.preventDefault());
+    });
+  }
+})();
+</script>
+</body>
+</html>
