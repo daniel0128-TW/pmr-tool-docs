@@ -14,12 +14,17 @@
 | 呈現 | 純 CSS 手刻假 UI，無截圖。頁面改版只需改 HTML |
 | 範圍 | 完整 8 章 |
 
-## app 現況基準（2026-07-30，commit `ded8ae1`）
+## app 現況基準（2026-08-08，commit `01774d2`）
 
-刻假 UI 一律以此為準，**不要照舊影片或舊記憶**：
+刻假 UI 一律以此為準，**不要照舊影片或舊記憶**。開工前先跑一次
+`git log 01774d2..origin/main`——這個 repo 幾乎每天都在動。
 
 - **`components/ui/` (shadcn) 全數刪除** → 純 Tailwind class，可直接照抄到教學的 CSS
-- **預設值 = `null`（沒評）**：`AllNormalButton`「全部正常 / 已全部標記正常」讓醫師明確確認正常，note 才分得出「確認正常」與「沒評」
+- **三種狀態**（教學第 4 章的主軸）：
+  - `null`＝**沒評**（預設，不進 note）
+  - **確認正常**——`AllNormalButton`「全部正常 / 已全部標記正常」，**再按一次＝取消**，清回未評
+  - **無法配合**——`QuestionRenderer` 的 `UserX` 鈕，只有 `COOPERATION_QUESTIONS` 那 13 題有（CN／DTR／MAS／FOIS／Sphincter／Barthel／mRS 沒有）。標記後表單換成虛線框「此項無法評估／病歷會印出 Unable to assess」
+  - **GCS 建議**：`suggestUnableFromGCS`，門檻 E≤2／M≤5／V≤3，跳琥珀色卡片列出項目 ＋「一併標記為無法配合」一鍵套用。**只建議不自動寫入**
 - **`ExpandableRow`**：每個量表項目收成一列（名稱＋現值格，未評顯示 `–`），點一下才在下方展開評分表；同時只開一列。MMT 的分頁鈕已移除 → **一題一頁**
 - **PHI 政策已定**：只收病歷號（MRN）＋床號，前端無姓名欄位（`patients.name` 是歷史欄名，存的是 MRN）
 - **閒置規則**：≥7 天出現「久未評估」警示、≥14 天卡片上出現紅 chip、**第 28 天清除**

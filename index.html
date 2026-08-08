@@ -473,6 +473,7 @@ kbd { background:#0f172a; border:1px solid #334155; border-bottom-width:2px; bor
 }
 .vs .vsbox .chip.empty { background:#1e293b; border-color:#334155; color:#475569; }
 .vs .vsbox .chip.norm  { background:#052e16; border-color:#15803d; color:#86efac; }
+.vs .vsbox .chip.unable{ background:#334155; border-color:#64748b; color:#e2e8f0; font-size:12px; }
 .vs .vsbox b { display:block; font-size:12.5px; color:#e2e8f0; margin-bottom:3px; }
 .vs .vsbox i { display:block; font-style:normal; font-size:11px; color:#64748b; line-height:1.5; }
 .vs .vsx { color:#475569; font-size:13px; font-weight:700; flex-shrink:0; }
@@ -905,7 +906,7 @@ kbd { background:#0f172a; border:1px solid #334155; border-bottom-width:2px; bor
     <div>
       <div class="ph-label">Chapter 4</div>
       <h2>跑一次評估</h2>
-      <p>一題一頁往下走。這一章最重要的兩件事：<strong>每列點開才評分</strong>，以及<strong>「沒評」和「正常」是兩回事</strong>。</p>
+      <p>一題一頁往下走。最重要的是搞懂三種狀態：<strong>沒評</strong>、<strong>確認正常</strong>、<strong>無法配合</strong>——它們在病歷上是三件不同的事。</p>
     </div>
   </div>
   <div class="pb">
@@ -921,27 +922,46 @@ kbd { background:#0f172a; border:1px solid #334155; border-bottom-width:2px; bor
         </div>
         <p style="font-size:12.5px">同時只會展開一列，所以一頁看得完全部項目，<strong>哪些還沒評一目了然</strong>。</p>
 
-        <div class="tryit"><span class="pulse"></span>右邊點點看：展開、評分、全部正常</div>
+        <div class="tryit"><span class="pulse"></span>右邊點點看：展開、評分、全部正常、無法配合</div>
 
-        <h3 style="color:#fca5a5">「沒評」不等於「正常」</h3>
+        <h3 style="color:#fca5a5">三種狀態，不要混為一談</h3>
         <div class="vs">
           <div class="vsbox">
             <span class="chip empty">–</span>
             <b>還沒評</b>
-            <i>預設狀態<br><b>不會出現在 note</b></i>
+            <i>預設狀態<br><b>不會進 note</b></i>
           </div>
           <div class="vsx">≠</div>
           <div class="vsbox">
             <span class="chip norm">2+</span>
             <b>確認正常</b>
-            <i>你按過「全部正常」<br>或自己選了值</i>
+            <i>按「全部正常」<br>或自己選了值</i>
+          </div>
+          <div class="vsx">≠</div>
+          <div class="vsbox">
+            <span class="chip unable">🚫</span>
+            <b>無法配合</b>
+            <i>病人做不出來<br>note 印<br><b>Unable to assess</b></i>
           </div>
         </div>
-        <p style="font-size:12.5px">預設值是<strong>空的</strong>，不是正常值——否則病歷上分不出「確認過正常」和「根本沒測」。確認正常請按區塊上方的<strong>「全部正常」</strong>，會變綠色鎖住。</p>
+        <p style="font-size:12.5px">預設值是<strong>空的</strong>，不是正常值——否則病歷上分不出「確認過正常」和「根本沒測」。而「病人意識不清做不出來」又跟「我忘了測」不一樣，所以第三種狀態要另外標。</p>
 
         <div class="callout green">
           <span class="ci">✅</span>
           <div>留白比亂填安全：沒評的項目不會被誤讀成你評過。</div>
+        </div>
+
+        <h3>題目上方的兩顆鈕</h3>
+        <div class="gcards">
+          <div class="gcard ok"><span class="gi">✓✓</span><b>全部正常</b><i>一鍵把整題填成正常值<br><b>再按一次＝取消</b>，清回未評</i></div>
+          <div class="gcard"><span class="gi">🚫</span><b>無法配合</b><i>表單換成<br>「此項無法評估」<br>防止誤填</i></div>
+        </div>
+        <p style="font-size:12.5px">只有<strong>需要病人配合</strong>的 13 題才有「無法配合」——反射（DTR）、被動關節活動（MAS）、腦神經，還有可以問家屬的病史類（Barthel、mRS）都沒有，因為意識不清也評得出來。</p>
+
+        <div class="callout amber">
+          <span class="ci">🧠</span>
+          <div><b>GCS 太低時會主動提醒。</b>E≤2、M≤5 或 V≤3 時，GCS 題目下方會跳出一張卡片列出「通常需要配合」的項目，按一下就全部標記完成。<br>
+          <span style="font-size:12px;opacity:.85">只是建議，不會自動寫入——要不要標仍然是你決定。</span></div>
         </div>
 
         <h3>導覽</h3>
@@ -977,34 +997,42 @@ kbd { background:#0f172a; border:1px solid #334155; border-bottom-width:2px; bor
             </div>
 
             <div style="padding:13px 12px 10px">
-              <div style="font-size:14px;font-weight:700;color:#111827;margin-bottom:2px">Deep Tendon Reflexes</div>
+              <div style="font-size:14px;font-weight:700;color:#111827;margin-bottom:2px">Muscle Strength (MMT)</div>
               <div style="font-size:10.5px;color:#9ca3af;margin-bottom:11px">未評的項目留空，確認正常請按下方按鈕</div>
 
-              <button class="allnorm" id="dtr-all">✓✓ 全部正常</button>
+              <div style="display:flex;gap:7px;margin-bottom:9px">
+                <button class="allnorm" id="q-unable" style="margin-bottom:0">🚫 無法配合</button>
+                <button class="allnorm" id="dtr-all" style="margin-bottom:0">✓✓ 全部正常</button>
+              </div>
+
+              <div id="q-unable-panel" style="display:none;border:2px dashed #e5e7eb;background:#f9fafb;border-radius:15px;padding:22px 14px;text-align:center">
+                <div style="font-size:12px;font-weight:700;color:#6b7280">此項無法評估</div>
+                <div style="font-size:10px;color:#9ca3af;margin-top:3px">病歷會印出 Unable to assess</div>
+              </div>
 
               <div id="dtr-rows">
                 <div class="erow" data-row>
-                  <div class="hd"><span class="badge">R</span><div class="nm"><b>Biceps 肱二頭肌</b><i>C5–C6</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="hd"><span class="badge">C5</span><div class="nm"><b>Elbow flexors</b><i>屈肘</i></div><span class="val">–</span><span class="chev">▾</span></div>
                   <div class="bd"><div class="strip">
-                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                    <button class="sb">0</button><button class="sb">1</button><button class="sb">2</button><button class="sb">3</button><button class="sb">4</button><button class="sb">5</button>
                   </div></div>
                 </div>
                 <div class="erow" data-row>
-                  <div class="hd"><span class="badge">L</span><div class="nm"><b>Biceps 肱二頭肌</b><i>C5–C6</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="hd"><span class="badge">C6</span><div class="nm"><b>Wrist extensors</b><i>伸腕</i></div><span class="val">–</span><span class="chev">▾</span></div>
                   <div class="bd"><div class="strip">
-                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                    <button class="sb">0</button><button class="sb">1</button><button class="sb">2</button><button class="sb">3</button><button class="sb">4</button><button class="sb">5</button>
                   </div></div>
                 </div>
                 <div class="erow" data-row>
-                  <div class="hd"><span class="badge">R</span><div class="nm"><b>Patellar 膝反射</b><i>L2–L4</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="hd"><span class="badge">L2</span><div class="nm"><b>Hip flexors</b><i>屈髖</i></div><span class="val">–</span><span class="chev">▾</span></div>
                   <div class="bd"><div class="strip">
-                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                    <button class="sb">0</button><button class="sb">1</button><button class="sb">2</button><button class="sb">3</button><button class="sb">4</button><button class="sb">5</button>
                   </div></div>
                 </div>
                 <div class="erow" data-row>
-                  <div class="hd"><span class="badge">L</span><div class="nm"><b>Patellar 膝反射</b><i>L2–L4</i></div><span class="val">–</span><span class="chev">▾</span></div>
+                  <div class="hd"><span class="badge">L3</span><div class="nm"><b>Knee extensors</b><i>伸膝</i></div><span class="val">–</span><span class="chev">▾</span></div>
                   <div class="bd"><div class="strip">
-                    <button class="sb">0</button><button class="sb">1+</button><button class="sb">2+</button><button class="sb">3+</button><button class="sb">4+</button>
+                    <button class="sb">0</button><button class="sb">1</button><button class="sb">2</button><button class="sb">3</button><button class="sb">4</button><button class="sb">5</button>
                   </div></div>
                 </div>
               </div>
@@ -1285,7 +1313,9 @@ improved to supervision level.</pre>
       <tr><td><strong>ASIA 點錯了？</strong></td><td>沒有復原鍵，繼續點回去（分數循環）。</td></tr>
       <tr><td><strong>捲動會改到分數嗎？</strong></td><td>不會。移動超過 10px 就判定為捲動。</td></tr>
       <tr><td><strong>某項目沒測怎麼填？</strong></td><td>留空。空白＝沒評，不會進 note。ASIA 用長按設 <code>NT</code>。</td></tr>
-      <tr><td><strong>「全部正常」能取消嗎？</strong></td><td>按完會鎖成綠色，但個別項目仍可點開改值。</td></tr>
+      <tr><td><strong>「全部正常」能取消嗎？</strong></td><td>能。<b>再按一次就清回未評</b>；個別項目也可點開改值。</td></tr>
+      <tr><td><strong>病人不配合／意識不清？</strong></td><td>按題目上方的<b>「無法配合」</b>，表單會換成「此項無法評估」，note 印 <code>Unable to assess</code>。</td></tr>
+      <tr><td><strong>為什麼有些題沒有「無法配合」？</strong></td><td>反射（DTR）、被動關節（MAS）、腦神經、病史類（Barthel、mRS）不需病人配合——意識不清也評得出來，或可問家屬。</td></tr>
       <tr><td><strong>做到一半要離開？</strong></td><td>綁病人時按右上「暫存」；訪客模式會自動留在本機。</td></tr>
       <tr><td><strong>突然跳回 access key 頁？</strong></td><td>登入逾時，重新輸入即可，已存資料不受影響。</td></tr>
     </table>
@@ -1416,7 +1446,7 @@ improved to supervision level.</pre>
           row.querySelectorAll('.sb').forEach(x => x.classList.remove('on', 'blue'));
           sb.classList.add('on', 'blue');
           val.textContent = sb.textContent;
-          val.className = 'val ' + (sb.textContent === '2+' ? 'norm' : 'set');
+          val.className = 'val ' + (sb.textContent === '5' ? 'norm' : 'set');
           row.classList.remove('open');
           syncAll();
         });
@@ -1424,26 +1454,52 @@ improved to supervision level.</pre>
     });
 
     function syncAll() {
-      const allNormal = rows.every(r => r.querySelector('.val').textContent === '2+');
+      const allNormal = rows.every(r => r.querySelector('.val').textContent === '5');
       allBtn.classList.toggle('done', allNormal);
       allBtn.textContent = allNormal ? '✓✓ 已全部標記正常' : '✓✓ 全部正常';
       const unrated = rows.filter(r => r.querySelector('.val').textContent === '–').length;
-      hint.innerHTML = unrated === 0
-        ? '全部評完了 · 按 <b>Next</b> 到下一題'
-        : '還有 <b>' + unrated + '</b> 項沒評（右邊顯示 <b>–</b>）';
+      hint.innerHTML = allNormal
+        ? '再按一次「全部正常」＝<b>取消</b>，清回未評'
+        : unrated === 0
+          ? '全部評完了 · 按 <b>Next</b> 到下一題'
+          : '還有 <b>' + unrated + '</b> 項沒評（右邊顯示 <b>–</b>）';
     }
 
+    // 全部正常：再按一次＝取消，清回未評（跟 app 一致）
     allBtn.addEventListener('click', () => {
-      if (allBtn.classList.contains('done')) return;
+      const undo = allBtn.classList.contains('done');
       rows.forEach(r => {
         r.classList.remove('open');
         const v = r.querySelector('.val');
-        v.textContent = '2+';
-        v.className = 'val norm';
-        r.querySelectorAll('.sb').forEach(x => x.classList.remove('on', 'blue'));
-        r.querySelectorAll('.sb')[2].classList.add('on', 'green');
+        r.querySelectorAll('.sb').forEach(x => x.classList.remove('on', 'blue', 'green'));
+        if (undo) {
+          v.textContent = '–';
+          v.className = 'val';
+        } else {
+          v.textContent = '5';
+          v.className = 'val norm';
+          r.querySelectorAll('.sb')[5].classList.add('on', 'green');
+        }
       });
       syncAll();
+    });
+
+    // 無法配合：整張表單換成「此項無法評估」
+    const unableBtn = document.getElementById('q-unable');
+    const unablePanel = document.getElementById('q-unable-panel');
+    unableBtn.addEventListener('click', () => {
+      const on = !unableBtn.classList.contains('done');
+      unableBtn.classList.toggle('done', on);
+      unableBtn.textContent = on ? '🚫 已標記無法配合' : '🚫 無法配合';
+      unableBtn.style.background = on ? '#374151' : '';
+      unableBtn.style.borderColor = on ? '#6b7280' : '';
+      unableBtn.style.color = on ? '#fff' : '';
+      unablePanel.style.display = on ? 'block' : 'none';
+      dtrRows.style.display = on ? 'none' : 'block';
+      allBtn.style.display = on ? 'none' : 'flex';
+      hint.innerHTML = on
+        ? 'note 會印一行 <b>Unable to assess</b>'
+        : '點一列展開評分表 · 右邊 <b>–</b> 代表還沒評';
     });
   }
 
