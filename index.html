@@ -80,7 +80,7 @@
 
 <header>
   <h1>PM&amp;R Tool 使用教學</h1>
-  <p class="lede">床邊評估 → 一鍵產出 note。全部畫面都是實機截圖，照著點就會。</p>
+  <p class="lede">床邊評估 → 一鍵產出 note。畫面都是實機截圖，照著點就會。</p>
 </header>
 
 <nav>
@@ -93,47 +93,37 @@
   <a href="#c7">7 · 常見問題</a>
 </nav>
 
+
 <!-- ───────────────────────── 1 ───────────────────────── -->
 <section id="c1">
   <h2><span class="n">1</span>先選一種模式</h2>
-  <p class="sub">打開網址第一件事就是這個選擇。兩種都能用，差別只在「資料存哪裡」。</p>
 
   <div class="row">
     <div>
       <table>
         <tr><th></th><th>訪客模式</th><th>登入模式</th></tr>
-        <tr><th>怎麼進</th><td>直接按綠色那顆</td><td>輸入 access key</td></tr>
-        <tr><th>資料存哪</th><td>只在這支手機的瀏覽器</td><td>伺服器（跨裝置看得到）</td></tr>
-        <tr><th>適合</th><td>臨時看一床、產完 note 就走</td><td>自己的病人要追蹤、比較、做週報</td></tr>
+        <tr><th>怎麼進</th><td>按綠色那顆</td><td>輸入 access key</td></tr>
+        <tr><th>資料存哪</th><td>這支手機的瀏覽器</td><td>伺服器，換裝置也看得到</td></tr>
+        <tr><th>適合</th><td>臨時看一床，產完 note 就走</td><td>自己的病人要追蹤、比較、做週報</td></tr>
       </table>
-      <p>訪客模式不會上傳任何東西，也<strong>不需要帳號</strong>；按「離開訪客模式」就回到登入畫面，原本的登入狀態還在。</p>
+      <p>訪客模式不用帳號，也不會上傳任何東西。按「離開訪客模式」就回到登入畫面。</p>
     </div>
     <figure class="shot">
       <img src="img/01-gate.png" alt="登入畫面：access key 輸入框與訪客模式按鈕">
-      <figcaption>底部還有「使用教學」與「除錯回報」——遇到怪狀況直接從那裡回報。</figcaption>
     </figure>
-  </div>
-
-  <div class="note warn">
-    <span class="t">只收病歷號，不收姓名</span>
-    <p>輸入框會自動擋掉中文字，填錯也存不進去。整套工具沒有姓名欄位。</p>
   </div>
 </section>
 
 <!-- ───────────────────────── 2 ───────────────────────── -->
 <section id="c2">
   <h2><span class="n">2</span>產一份 note：三步</h2>
-  <p class="sub">首頁 → 作答 → Generate Note。這章跑完就夠日常用。</p>
 
   <div class="row">
     <div>
-      <h3>① 首頁：決定這次要做多少</h3>
-      <ul>
-        <li><strong>入院完整評估</strong>：病人背景 + 4 個模組，新入院用這顆。</li>
-        <li><strong>選模組</strong>：只想補神經學就只點「神經與動作」，題目只會出那幾題。</li>
-        <li><strong>ASIA / ISNCSCI</strong>：脊髓損傷走另一條路（第 4 章）。</li>
-      </ul>
-      <p>病歷號與日期都是選填，但填了 note 抬頭才帶得出來。</p>
+      <h3>① 首頁選範圍</h3>
+      <p>新入院按<strong>入院完整評估</strong>（病人背景＋4 個模組）。只想補一段就點那個模組，題目只會出那幾題，可以複選。</p>
+      <p>脊髓損傷走 <strong>ASIA / ISNCSCI</strong>，見第 4 章。</p>
+      <p>病歷號和日期選填，填了 note 抬頭才有。</p>
     </div>
     <figure class="shot">
       <img src="img/02-home.png" alt="訪客首頁：病歷號、日期、入院完整評估、五個模組、ASIA 入口">
@@ -143,36 +133,23 @@
   <div class="row flip">
     <figure class="shot">
       <img src="img/03-modules.png" alt="選了認知與情緒、神經與動作兩個模組後，按鈕變成「開始評估（2 個模組）」">
-      <figcaption>選到的模組會亮起各自的顏色，按鈕直接顯示會做幾個模組。</figcaption>
+      <figcaption>選到的模組會亮起來，按鈕直接寫要做幾個。</figcaption>
     </figure>
     <div>
-      <h3>模組可以複選</h3>
-      <p>每個模組一種顏色，之後在題目頁的進度條上也是同一色，一眼知道自己做到哪一段。</p>
+      <h3>② 一頁一題</h3>
+      <p>分數用點的，不打字。上面是進度條，下面一顆 Next。</p>
+      <p>作答隨時存著，中途被叫走或手機鎖屏都不會掉。</p>
     </div>
   </div>
 
   <div class="row">
     <div>
-      <h3>② 一頁一題，往下 Next</h3>
-      <p>每題上方是進度條（第幾題 / 共幾題），下方固定一顆 Next。分數是點的，不打字。</p>
-      <p>像 GCS 這種多欄位的題目，收起時直接顯示反應內容（Pain、Sounds、W/draw），不用展開就看得到自己填了什麼。</p>
-      <p>作答即時存在本機，中途被叫走、手機鎖屏都不會掉。</p>
+      <h3>③ 按 Generate Note</h3>
+      <p>跳出英文 note，<strong>複製</strong>貼進 HIS，或<strong>分享</strong>丟給 LINE／Mail。</p>
+      <p>左上角可以切到<strong>總覽圖</strong>（第 5 章）。右上角「新評估」清空重來，「回主畫面」則留在今日清單裡。</p>
     </div>
     <figure class="shot">
-      <img src="img/04-gcs.png" alt="GCS 題目頁，E/V/M 三列與展開的選項列">
-    </figure>
-  </div>
-
-  <div class="row">
-    <div>
-      <h3>③ 最後一題按 Generate Note</h3>
-      <p>跳出完整英文 note，直接<strong>複製</strong>貼進 HIS，或用<strong>分享</strong>丟給手機的 LINE／Mail。</p>
-      <p>沒填的項目印 <code>N/A</code>，標記無法配合的印 <code>Unable to assess</code>——不會假裝那項是正常。</p>
-      <p>左上角可以切到 <strong>總覽圖</strong>——同一份資料的圖形版，查房用（第 5 章）。</p>
-      <p>右上角「新評估」＝清空重來；「回主畫面」＝這份留在今日清單裡。</p>
-    </div>
-    <figure class="shot">
-      <img src="img/10-note.png" alt="Clinical Note 畫面，底部有複製、分享、回主畫面三顆按鈕">
+      <img src="img/10-note.png" alt="Clinical Note 畫面，上方有 Note／總覽圖 切換，底部有複製、分享、回主畫面">
     </figure>
   </div>
 
@@ -182,26 +159,25 @@
     </figure>
     <div>
       <h3>做完的留在「今日已評估」</h3>
-      <p>回首頁往下捲就看得到今天做過的每一床，點進去可以再看一次那份 note。</p>
-      <p>這份清單只存在這台裝置，關掉瀏覽器資料仍在，但換手機就沒有。</p>
+      <p>回首頁往下捲，今天做過的每一床都在，點進去再看一次那份 note。</p>
     </div>
   </div>
 </section>
 
 <!-- ───────────────────────── 3 ───────────────────────── -->
 <section id="c3">
-  <h2><span class="n">3</span>四個讓你快很多的東西</h2>
+  <h2><span class="n">3</span>四個加速鍵</h2>
   <p class="sub">一床從三分鐘變一分鐘，大概就靠這四個。</p>
 
   <div class="row">
     <div>
       <h3>全部正常</h3>
-      <p>GCS、腦神經、DTR、MAS、感覺、小腦這幾題有這顆。按一下整題填成正常值，<strong>再按一下取消</strong>回到未評。</p>
-      <p>先按「全部正常」、再改掉異常的那幾格，比一格一格點快得多。</p>
+      <p>GCS、腦神經、DTR、MAS、感覺、小腦有這顆。按一下整題填成正常，再按一下取消。</p>
+      <p>先按全部正常、再改異常那幾格，比一格一格點快很多。</p>
     </div>
     <figure class="shot">
       <img src="img/07-dtr.png" alt="DTR 題目，上方有全部正常按鈕，右側 +++、左側 ++">
-      <figcaption>DTR 已改成 0 / + / ++ / +++ / ++++，不是舊的數字分級。</figcaption>
+      <figcaption>DTR 是 0 / + / ++ / +++ / ++++，不是數字分級。</figcaption>
     </figure>
   </div>
 
@@ -211,16 +187,16 @@
     </figure>
     <div>
       <h3>無法配合</h3>
-      <p>只出現在<strong>需要病人配合</strong>的題目（MMT、Brunnstrom、平衡、FAC、MMSE、LAST、吞嚥…）。反射、腦神經那類不需要配合的沒有這顆。</p>
-      <p>標了之後該題印 <code>Unable to assess</code>，不會混進「正常」裡。</p>
+      <p>病人做不出來就按這顆，note 會印 <code>Unable to assess</code>，不會跟「正常」混在一起。</p>
+      <p>只有需要病人配合的題目有（MMT、Brunnstrom、平衡、FAC、MMSE、LAST、吞嚥…）。</p>
     </div>
   </div>
 
   <div class="row">
     <div>
-      <h3>GCS 低分時的整批標記</h3>
-      <p>E、V、M 分數一填，若病人根本無法依指令動作，系統會直接列出「這 13 項通常需要配合」，一顆按鈕全部標成無法配合。</p>
-      <p>只是建議，<strong>按了才會寫進去</strong>；也可以先按再逐題取消。</p>
+      <h3>GCS 低分就整批標</h3>
+      <p>E、V、M 一填完，如果病人根本無法配合，App 會列出那 13 項，一顆按鈕全部標完。</p>
+      <p>不按就不會動到任何一題。</p>
     </div>
     <figure class="shot">
       <img src="img/05-gcs-suggest.png" alt="GCS E2 V2 M4 之下出現黃色建議卡，列出 13 個需要配合的項目與「一併標記為無法配合」按鈕">
@@ -233,8 +209,7 @@
     </figure>
     <div>
       <h3>點進度條跳題</h3>
-      <p>不必一路 Next。點上方那條「<em>x of y questions · tap to jump</em>」就跳出全部題目，直接跳到要改的那題。</p>
-      <p>右上角的圓形箭頭是重置——會清掉這份評估，按下去前先確認。</p>
+      <p>不用一路 Next。點上面那條進度條就跳出全部題目，直接跳到要改的那題。</p>
     </div>
   </div>
 </section>
@@ -246,10 +221,10 @@
 
   <div class="row">
     <div>
-      <h3>感覺：點格子填分</h3>
-      <p>左右各一欄 LT / PP，點格子開分數選單（2 正常、1 異常、0 無感覺、NT 無法測試）。</p>
-      <p>中間那顆 <strong>↓0</strong> 是「這一節以下全部歸零」——完全損傷不用點四十幾次。</p>
-      <p>頂端「參考圖」隨時叫出官方 worksheet 的皮節／肌節對照。</p>
+      <h3>感覺</h3>
+      <p>左右各一欄 LT / PP，點格子選分（2 正常、1 異常、0 無感覺、NT 無法測試）。</p>
+      <p>中間的 <strong>↓0</strong> 把這一節以下全部歸零，完全損傷不用點四十幾次。</p>
+      <p>頂端「參考圖」隨時叫出官方 worksheet。</p>
     </div>
     <figure class="shot">
       <img src="img/11-asia-sensory.png" alt="ASIA 感覺頁，頸 C 區段，C2–C6 為 2 分、C7 以下為 0 分">
@@ -261,18 +236,17 @@
       <img src="img/12-asia-motor.png" alt="ASIA 運動頁上肢，C5 為 5、C6 為 4、C7 以下 0">
     </figure>
     <div>
-      <h3>運動：10 條關鍵肌群</h3>
-      <p>上肢 C5–T1、下肢 L2–S1，同樣有 <strong>↓0</strong>。</p>
-      <p>下肢頁最底下是 <strong>VAC / DAP</strong> 與「最低仍有動作的非關鍵肌群」——後者會影響 AIS B 還是 C，有就填。</p>
+      <h3>運動</h3>
+      <p>上肢 C5–T1、下肢 L2–S1，一樣有 <strong>↓0</strong>。</p>
+      <p>下肢頁最底下是 VAC / DAP 和「最低仍有動作的非關鍵肌群」。後者決定 AIS B 還是 C，有就填。</p>
     </div>
   </div>
 
   <div class="row">
     <div>
-      <h3>結果會告訴你「為什麼」</h3>
-      <p>AIS 分級下方直接列出判定理由（例：S4-5 無感覺殘留、DAP 陰性、無 VAC → 完全損傷 → AIS A），sensory / motor level、NLI、ZPP、各項總分一次到齊。</p>
-      <p>每個 level 旁邊都寫了定義，不用回頭翻書確認自己有沒有算錯。</p>
-      <p>底部「複製」給 HIS，「分享」給手機的 App。</p>
+      <h3>結果會說明理由</h3>
+      <p>AIS 分級下面列出怎麼判的，sensory / motor level、NLI、ZPP、各項總分一次到齊，每個 level 旁邊附定義。</p>
+      <p>底部「複製」給 HIS，「分享」給手機。</p>
     </div>
     <figure class="shot">
       <img src="img/13-asia-score.png" alt="ASIA 結果頁：AIS A、判定理由、sensory/motor level 與 NLI">
@@ -283,28 +257,19 @@
     <img src="img/13b-asia-totals.png" alt="ASIA 結果頁下半：ZPP 與 Motor/LT/PP 總分">
     <figcaption>往下捲是 ZPP 與各項總分。</figcaption>
   </figure>
-
-  <div class="note">
-    <span class="t">填到一半可以走</span>
-    <p>ASIA 有草稿，重新整理或被叫走回來時作答還在。從首頁的 ASIA 入口重新開一份才會清空。</p>
-  </div>
 </section>
 
 <!-- ───────────────────────── 5 ───────────────────────── -->
 <section id="c5">
-  <h2><span class="n">5</span>總覽圖：一頁看完這個病人</h2>
-  <p class="sub">同一份評估的另一種長相。查房、交班、跟家屬解釋用圖比用文字快。</p>
+  <h2><span class="n">5</span>總覽圖</h2>
+  <p class="sub">同一份評估的圖形版。查房、交班、跟家屬解釋用這個比較快。</p>
 
   <div class="row">
     <div>
-      <h3>三個地方都打得開</h3>
-      <ul>
-        <li>題目頁右上角的 <strong>圖</strong>——<strong>不必做完</strong>，填到哪看到哪。</li>
-        <li>Note 畫面左上角切到 <strong>總覽圖</strong>。</li>
-        <li>登入模式的病人頁也有一顆（見第 6 章）。</li>
-      </ul>
-      <h3>顏色就是嚴重度</h3>
-      <p>綠 → 黃 → 橘 → 紅，一路由正常到極重度；<strong>灰＝還沒填</strong>，<strong>斜線＝標了無法配合</strong>。沒填和做不出來長得不一樣，不會互相冒充。</p>
+      <h3>哪裡打得開</h3>
+      <p>題目頁右上角的 <strong>圖</strong>（不用做完，填到哪看到哪）、Note 畫面左上角的<strong>總覽圖</strong>、登入模式的病人頁。</p>
+      <h3>顏色＝嚴重度</h3>
+      <p>綠 → 黃 → 橘 → 紅是正常到極重度，灰色是還沒填，斜線是標了無法配合。</p>
     </div>
     <figure class="shot">
       <img src="img/15-summary-phone.png" alt="床邊評估總覽：上排八個環形儀表，下方身體圖">
@@ -317,21 +282,21 @@
       <img src="img/16-summary-panels.png" alt="總覽圖下半：小腦功能、移動所需協助長條圖、Barthel Index 與圖例">
     </figure>
     <div>
-      <h3>身體圖怎麼讀</h3>
+      <h3>怎麼讀</h3>
       <ul>
-        <li>頭＝認知（MMSE 為主，評不出來才退回 GCS），旁邊掛 4AT、PHQ-2。</li>
-        <li>四肢顏色＝Brunnstrom，肢體上的數字＝MMT，小圈＝DTR（<strong>↑</strong> 代表亢進），chip 上的 MAS＝張力。</li>
-        <li>左右是<strong>病人的</strong>左右，圖上直接標了「病人右 R／病人左 L」。</li>
-        <li>下半：平衡四格、小腦、移動所需協助（柱子越高越依賴）、Barthel 分項。</li>
+        <li>頭是認知（MMSE，沒評就換 GCS），旁邊掛 4AT、PHQ-2。</li>
+        <li>四肢顏色是 Brunnstrom，肢體上的數字是 MMT，小圈是 DTR（↑ 亢進），chip 上的 MAS 是張力。</li>
+        <li>左右是<strong>病人的</strong>左右，圖上有標「病人右 R／病人左 L」。</li>
+        <li>下半：平衡、小腦、移動所需協助（柱子越高越依賴）、Barthel 分項。</li>
       </ul>
+      <p>任何一塊都能點開明細，桌機滑過去就開。</p>
     </div>
   </div>
 
   <div class="row">
     <div>
-      <h3>點下去看明細</h3>
-      <p>任何一塊都能點（桌機滑過去就開）：Barthel 會列出沒拿滿分的項目、腦神經會說哪一條有問題、MAS 會分開列屈與伸。</p>
-      <p>圖上只放結論，細節收在點擊裡——這樣一頁才塞得下。</p>
+      <h3>明細長這樣</h3>
+      <p>Barthel 只列沒拿滿分的、腦神經說哪一條有問題、MAS 分開列屈與伸。</p>
     </div>
     <figure class="shot">
       <img src="img/17-summary-detail.png" alt="點 Barthel 儀表後跳出的明細：各分項分數，註明僅列出未拿滿分的項目">
@@ -341,48 +306,58 @@
   <h3>A4 橫向：印成一張紙</h3>
   <figure class="shot" style="max-width:100%">
     <img src="img/18-summary-wide.png" alt="寬螢幕下的總覽圖全貌：儀表列、身體圖、平衡、移動協助、Barthel、圖例" style="max-width:100%">
-    <figcaption style="max-width:100%">右上角「A4 橫向」會直接叫出列印，一張紙印完（手機選「存成 PDF」也可以）。紙本抬頭自動帶床號與病歷號，離開螢幕還認得出是誰。</figcaption>
+    <figcaption style="max-width:100%">右上角「A4 橫向」直接叫列印，一張紙印完，手機選「存成 PDF」也可以。抬頭會自動帶床號與病歷號。</figcaption>
   </figure>
-
-  <div class="note">
-    <span class="t">這個畫面刻意沒有「分享」</span>
-    <p>系統分享面板送不出畫面上畫的東西，按下去只會送出病歷文字，看的人會以為分享的是圖。<strong>要傳圖就印成 PDF 再傳，要傳文字回 Note 畫面按複製／分享。</strong></p>
-  </div>
 </section>
 
 <!-- ───────────────────────── 6 ───────────────────────── -->
 <section id="c6">
   <h2><span class="n">6</span>登入模式多了什麼</h2>
-  <p class="sub">同樣的評估流程，差別在資料留在伺服器，所以能跨天、跨裝置整理。</p>
+  <p class="sub">評估流程一樣，差在資料留在伺服器，可以跨天跨裝置整理。</p>
 
-  <h3>病人清單（Dashboard）</h3>
+  <h3>病人清單</h3>
   <ul>
-    <li>用<strong>新病人</strong>建床，之後每次評估都掛在那位病人底下；病房分組各有自己的顏色。</li>
+    <li><strong>新病人</strong>建床，之後每次評估都掛在他底下；病房分組各有顏色。</li>
     <li>勾選多位病人 → <strong>批次處理</strong>：Email 今日評估、產 Weekly 摘要。</li>
-    <li>病人可以<strong>拖曳排序</strong>，排成你實際查房的順序。</li>
-    <li>久未評估的病人會被提出來提醒。</li>
+    <li>病人可以拖曳排序，排成你查房的順序。</li>
+    <li>太久沒評的病人會被提出來提醒。</li>
   </ul>
 
-  <h3>病人頁（History）</h3>
+  <h3>病人頁</h3>
   <ul>
-    <li>同一床的歷次評估按時間排列，可挑兩次做 <strong>Comparison</strong>，只看變動的項目。</li>
-    <li>頁首的 <strong>圖</strong> 打開總覽圖，回答的是「這個病人<strong>現在</strong>什麼樣子」：模組分次評的話，各模組各取最新一筆<strong>合併</strong>成一張圖，比較舊的那幾塊會在圖上標日期。</li>
-    <li>ASIA 紀錄與 Weekly 摘要也存在同一頁。</li>
-    <li>評估中多一顆<strong>暫存</strong>：還沒做完先存草稿，之後回來接著填。</li>
+    <li>歷次評估按時間排，挑兩次做 <strong>Comparison</strong>，只看有變的項目。</li>
+    <li>頁首的 <strong>圖</strong> 會把各模組最新一筆合併成一張總覽圖，比較舊的區塊會標日期。</li>
+    <li>ASIA 紀錄和 Weekly 摘要也在這頁。</li>
+    <li>評估中多一顆<strong>暫存</strong>，沒做完先存草稿。</li>
   </ul>
 
   <div class="note warn">
     <span class="t">資料不會永遠留著</span>
-    <p>病人超過 <strong>14 天</strong>沒有新評估會先警示，第 <strong>28 天</strong>自動清除（清除前系統會把紀錄寄回給你）。要留的東西請自己複製出來。</p>
+    <p>病人超過 <strong>14 天</strong>沒有新評估會先警示，第 <strong>28 天</strong>自動清除。清除前系統會把紀錄寄回給你，但要留的東西還是自己先複製走。</p>
   </div>
 </section>
 
-<!-- ───────────────────────── 6 ───────────────────────── -->
+<!-- ───────────────────────── 7 ───────────────────────── -->
 <section id="c7">
   <h2><span class="n">7</span>常見問題</h2>
 
   <h3>資料會不會掉？</h3>
-  <p>訪客模式存在瀏覽器（同一台裝置、同一個瀏覽器才看得到），登入模式存在伺服器。訪客模式清瀏覽器資料＝全部消失。</p>
+  <p>訪客模式存在瀏覽器，只有同一台裝置、同一個瀏覽器看得到，清掉瀏覽器資料就沒了。登入模式存在伺服器，換手機也還在。</p>
+
+  <h3>為什麼打不進中文？</h3>
+  <p>刻意的。這套工具只收病歷號，姓名不進系統，輸入框會自動擋掉中文。</p>
+
+  <h3>沒填的項目 note 會怎麼印？</h3>
+  <p>印 <code>N/A</code>。標了無法配合的印 <code>Unable to assess</code>，兩者分得開。</p>
+
+  <h3>題目頁右上角那個圓形箭頭？</h3>
+  <p>重置，會清掉這份評估重來。按之前先確認。</p>
+
+  <h3>ASIA 填到一半被叫走？</h3>
+  <p>有草稿，重新整理回來作答還在。從首頁的 ASIA 入口重開一份才會清空。</p>
+
+  <h3>總覽圖為什麼沒有分享鈕？</h3>
+  <p>系統分享面板送不出畫面上畫的東西，按下去只會送出文字。要傳圖就印成 PDF 再傳，要傳文字回 Note 畫面按複製或分享。</p>
 
   <h3>沒有「分享」那顆按鈕？</h3>
   <p>桌機瀏覽器沒有系統分享功能，只會有「複製」。手機上兩顆都在。</p>
@@ -390,22 +365,22 @@
   <div class="row">
     <div>
       <h3>MMT 要做細的？</h3>
-      <p>預設是粗評：四肢各一張卡，近端／遠端兩格，一頁做完。切到細評才會出現四肢分頁與逐條關鍵肌群（C5–T1、L2–S1）。</p>
+      <p>預設粗評：四肢各一張卡，近端／遠端兩格，一頁做完。切到細評才會出現四肢分頁和逐條關鍵肌群（C5–T1、L2–S1）。</p>
     </div>
     <figure class="shot">
       <img src="img/08-mmt.png" alt="MMT 粗評模式：右上肢卡片，近端與遠端兩列">
     </figure>
   </div>
 
-  <h3>病歷號打不進中文？</h3>
-  <p>是刻意的。這套工具只收病歷號，姓名不進系統。</p>
+  <h3>GCS 那 13 項是哪些？</h3>
+  <p>需要病人配合的題目：MMT、Brunnstrom、平衡、協助程度、FAC、小腦、RSST、吞嚥測試、MMSE、4AT、LAST、失語型、感覺。</p>
 
   <h3>發現錯誤或怪畫面？</h3>
   <p>登入畫面下方的「除錯回報」可以直接在 App 裡回報，不用另外寫信。</p>
 </section>
 
 <footer>
-  截圖取自實機（訪客模式）。App 更新頻繁，若畫面與此處不同，以 App 為準。
+  截圖取自實機（訪客模式）。App 更新很勤，畫面對不上時以 App 為準。
 </footer>
 
 </div>
